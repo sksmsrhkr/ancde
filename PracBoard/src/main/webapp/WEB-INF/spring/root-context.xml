@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- DB접속 정보 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="scott" />
+		<property name="password" value="tiger" />
+	</bean>
+	
+	<!-- 마이바티스 수행 객체 설정 (SqlSession) -->
+	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	
+		<!-- 스프링 빈으로 등록된 dataSource를 이용한 DB접속정보 설정 -->
+		<property name="dataSource" ref="dataSource" />
+	
+		<!-- 마이바티스 설정파일(XML)의 위치 지정하기 -->
+<!-- 		<property name="configLocation" value="classpath:/mybatis-config.xml" /> -->
+	
+		<!-- Configuration XML파일 없이 설정 항목 적용하기 -->
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true" />
+				<property name="jdbcTypeForNull" value="NULL" />
+			</bean>
+		</property>
+	
+	
+	
+		<!-- Mapper XML파일의 위치 설정 -->
+		<property name="mapperLocations">
+			<array>
+			
+				<!-- ** : 모든 폴더 구조 -->
+				<!-- * : 모든 단어 -->
+			
+				<value>classpath:/**/dao/**/*Mapper.xml</value>
+			</array>
+		</property>
+	</bean>
+	
+	<!-- 마이바티스를 이용하는 인터페이스 설정 (DAO설정) -->
+	<!-- 	Mapper XML의 namespace속성에 맞는 인터페이스를 찾는 패키지 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="Board.dao" />
+	</bean>
+	
+	
+	<!-- 트랜잭션 매니저 스프링 빈 설정 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
