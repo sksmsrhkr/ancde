@@ -29,7 +29,8 @@
 				<property name="jdbcTypeForNull" value="NULL" />
 			</bean>
 		</property>
-	
+		
+		<property name="typeAliasesPackage" value="com.myboard.myapp.dto, com.myboard.myapp.util"/>
 	
 	
 		<!-- Mapper XML파일의 위치 설정 -->
@@ -47,7 +48,7 @@
 	<!-- 마이바티스를 이용하는 인터페이스 설정 (DAO설정) -->
 	<!-- 	Mapper XML의 namespace속성에 맞는 인터페이스를 찾는 패키지 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="Board.dao" />
+		<property name="basePackage" value="com.myboard.myapp.*.dao" />
 	</bean>
 	
 	

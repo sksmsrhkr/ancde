@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper
+  	namespace="com.myboard.myapp.user.dao.face.UserDao">
+  	
+  <select id="isUser" parameterType="User" resultType="int">
+  	SELECT count(*) FROM user_tb 
+  	WHERE user_id = #{userId} AND user_pw = #{userPw}
+  </select>	
+  
+  <select id="getUserInfo" parameterType="User"
+  	resultType="User">
+  	SELECT user_no, user_nick FROM user_tb 	
+  	WHERE user_id = #{userId} AND user_pw = #{userPw}
+  </select>
+  
+  </mapper>

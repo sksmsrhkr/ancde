@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper
+  	namespace="com.myboard.myapp.Board.dao.face.BoardDao">
+  	
+  	<select id="getTotalPaging" resultType="int" >
+  		SELECT count(*) FROM board
+  	</select>
+  
+  	<select id="selectList" resultType="Map" parameterType="Map">
+  		SELECT * FROM
+  		(SELECT rownum rnum, B.* FROM 
+  		(SELECT * FROM board ORDER BY board_no DESC) B
+  		)WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<select id="selectBoardList" resultType="Board" parameterType="int">
+  		SELECT * FROM
+  		(SELECT rownum rnum , B.* FROM 
+  		(SELECT * FROM board ORDER BY board_no DESC) B
+  		)WHERE rnum BETWEEN #{startNo} AND #{endNo}
+  	</select>
+  	
+  	<select id="getBoard" resultType="Board" parameterType="int" >
+		select * from(        
+		SELECT B.*,
+		Lag(board_no, 1, 0) over(order by board_no) as prev_no,
+		LAG(title, 1, '이전 글이 없습니다.') over(order by board_no) as prev_title,
+		Lead(board_no, 1, 0) over(order by board_no) as next_no,
+		Lead(title, 1, '다음 글이 없습니다.') over(order by board_no) as next_title
+		from board B)
+		where board_no = #{boardNo}
+  	</select>
+  	
+  	<select id="isRecommend" resultType="int" parameterType="BoardRecommend">
+  		SELECT count(*) FROM board_recommend WHERE user_no = #{userNo} AND board_no = #{boardNo}
+  	</select>
+  	
+  	<insert id="insertRecommend" parameterType="BoardRecommend">
+  		INSERT INTO board_recommend VALUES (#{userNo}, #{boardNo})
+  	</insert>
+  	
+  	<delete id="deleteRecommend" parameterType="BoardRecommend">
+  		DELETE FROM board_recommend WHERE user_no = #{userNo} AND board_no = #{boardNo}
+  	</delete>
+  	
+  	<select id="getCntRecommend" parameterType="int" resultType="int">
+  		SELECT count(*) FROM board_recommend WHERE board_no = #{boardNo}
+  	</select>
+  	
+  	<select id="getWriterInfo" parameterType="int" resultType="User">
+  		SELECT user_nick FROM user_tb WHERE user_no = #{userNo}
+  	</select>
+  	
+  	<insert id="insertBoard" parameterType="Board">
+  		INSERT into board( board_no, title, content, hit, user_no )
+  		VALUES
+  		(board_no_seq.nextval
+  		,#{title}
+  		,#{content}
+  		,0
+  		,#{userNo}) 
+  	</insert>
+  	
+  	<update id="insertHit" parameterType="int">
+  		UPDATE board SET hit = hit+1 WHERE board_no = #{boardNo}
+  	</update>
+  	
+  </mapper>

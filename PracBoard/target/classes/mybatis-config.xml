@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 마이바티스 3 서정 항목을 넣는 태그 -->
+<!-- 최상위 부모 객체 -->
+<configuration>
+
+    <settings>
+       <setting name="mapUnderscoreToCamelCase" value="true"/>
+       <setting name="jdbcTypeForNull" value="NULL"/>
+    </settings>
+    
+	<!-- daoMapper에서 쿼리태그에 사용할 -->
+	<!-- parameter/result Type의 value로 들어갈 이름을 alias -->	
+	<typeAliases>
+		<typeAlias type="com.myboard.myapp" alias="com"/>
+	</typeAliases>
+
+	
+</configuration>
