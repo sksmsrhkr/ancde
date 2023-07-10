@@ -10,13 +10,6 @@
   	<select id="getTotalPaging" resultType="int" >
   		SELECT count(*) FROM board
   	</select>
-  
-  	<select id="selectList" resultType="Map" parameterType="Map">
-  		SELECT * FROM
-  		(SELECT rownum rnum, B.* FROM 
-  		(SELECT * FROM board ORDER BY board_no DESC) B
-  		)WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
-  	</select>
   	
   	<select id="selectBoardList" resultType="Board" parameterType="int">
   		SELECT * FROM
@@ -69,5 +62,82 @@
   	<update id="insertHit" parameterType="int">
   		UPDATE board SET hit = hit+1 WHERE board_no = #{boardNo}
   	</update>
+  	
+  	<insert id="insertComment" parameterType="BoardComment">
+  		<selectKey order="BEFORE" resultType="int"
+			keyProperty="commentNo">
+			SELECT board_comment_no_seq.nextval FROM dual
+		</selectKey>
+  		INSERT INTO 
+  		board_comment (comment_no, comm_content, board_no, user_no, chk_lock)
+  		VALUES
+  		( #{commentNo}
+  		, #{commContent}
+  		, #{boardNo}
+  		, #{userNo}
+  		, #{chkLock}
+  		)
+  	</insert>
+  	
+  	<select id="getCommentList" parameterType="int" resultType="Map">
+        SELECT  U.user_nick, F.comfile_stored, C.*
+        FROM    user_tb U, commentfile F, board_comment C 
+		WHERE   C.board_no = #{boardNo}
+        AND U.user_no = C.user_no(+)
+        AND C.comment_no = F.comment_no(+)
+	    start with C.step = 0
+	    connect by prior C.comment_no = C.parent_no
+  	</select>
+  	
+  	<select id="getCntComment" parameterType="int" resultType="int">
+  		SELECT count(*) FROM board_comment WHERE board_no = #{boardNo}
+  	</select>
+  	
+  	<delete id="deleteComment" parameterType="BoardComment">
+  		DELETE FROM board_comment WHERE board_no = #{boardNo} AND comment_no = #{commentNo}
+  	</delete>
+  	
+  	<insert id="insertCommFile" parameterType="CommentFile">
+  		INSERT INTO commentfile 
+  		(comment_no, board_no, comfile_no, comfile_origin, comfile_stored)
+  		VALUES
+  		( #{commentNo},
+  		  #{boardNo},
+  		  commentfile_no_seq.nextval,
+  		  #{comfileOrigin},
+  		  #{comfileStored}
+  		)
+  	</insert>
+  	
+  	<select id="getCommImg" parameterType="int" resultType="CommentFile">
+  		SELECT * FROM commentfile WHERE comment_no = #{commentNo}
+  	</select>
+  	
+  	 <select id="selectList" resultType="Map" parameterType="Map">
+  		SELECT * FROM
+  		(SELECT rownum rnum , L.* FROM(
+        SELECT b.* 
+        , (SELECT count(*) FROM  board_recommend br WHERE br.board_no = b.board_no
+        ) recommendCnt
+        , (SELECT count(*) FROM board_comment bc WHERE bc.board_no = b.board_no) commentCnt
+        , u.user_nick
+        FROM board b
+        INNER JOIN user_tb u ON b.user_no = u.user_no
+  		ORDER BY b.board_no DESC
+        ) L
+  		)WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<update id="updateCommContent" parameterType="BoardComment">
+  		UPDATE board_comment SET comm_content = #{commContent}, chk_lock = #{chkLock} WHERE comment_no = #{commentNo}
+  	</update>
+  	
+  	<delete id="deleteCommFile" parameterType="BoardComment">
+  		DELETE FROM commentfile WHERE comment_no = #{commentNo}
+  	</delete>
+  	
+  	<delete id="deleteImgFile" parameterType="int">
+  		DELETE FROM commentfile WHERE comment_no = #{commentNo}
+  	</delete>
   	
   </mapper>

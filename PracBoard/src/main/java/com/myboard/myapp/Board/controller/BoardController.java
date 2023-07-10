@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -14,11 +15,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.myboard.myapp.Board.service.face.BoardService;
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.BoardComment;
+import com.myboard.myapp.dto.CommentFile;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
@@ -40,11 +47,8 @@ public class BoardController {
 		logger.info("굿긋");
 		
 		List<Map<String, Object>> list = boardService.selectList(paging);
-		
-//		List<Board> boardList = boardService.selectBoardList(paging);
-		
+
 		logger.info("list: {}", list);
-//		logger.info("list: {}", boardList);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("paging", paging);
@@ -57,6 +61,10 @@ public class BoardController {
 		int userNo = (Integer) session.getAttribute("userNo");
 		Board board = boardService.getBoard(boardNo);
 		
+		//댓글
+		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
+		int commentCnt = boardService.getCntComm(boardNo);
+		
 		//작성자 정보
 		User user = boardService.getUserInfo(board.getUserNo());
 		String writerNick = user.getUserNick();
@@ -66,12 +74,19 @@ public class BoardController {
 		int isRecommend = boardService.isRecommendByNo(userNo, boardNo);
 		int cntRecommend = boardService.getCntRecommend(boardNo);
 		
+		//대댓글
+		
+		
 		logger.info("board : {}", board);
+		logger.info("commentList : {}", commentList);
 		
 		model.addAttribute("board", board);
+		model.addAttribute("boardNo", boardNo);
 		model.addAttribute("writerNick", writerNick);
 		model.addAttribute("isRecommend", isRecommend);
 		model.addAttribute("cntRecommend", cntRecommend);
+		model.addAttribute("commentList", commentList);
+		model.addAttribute("cntComment", commentCnt);
 
 	}
 	
@@ -126,6 +141,129 @@ public class BoardController {
 		
 	}
 	
+	@RequestMapping("/comment")
+	public ModelAndView boardcomment(BoardComment boardComment, MultipartFile file, Model model, ModelAndView mav, HttpSession session) {
+//		logger.info("{}", boardComment);
+//		logger.info("{}", boardNo);
+		int userNo = (Integer) session.getAttribute("userNo");
+		
+		String chkY = boardComment.getChkLock();
+		if(chkY.contains("y")) {
+			
+			boardComment.setChkLock("y");
+		}
+		
+		logger.info("{}", boardComment);
+		logger.info("{}", file.getOriginalFilename());
+		
+		boardService.insertComm(boardComment, file);
+		int commentNo = boardComment.getCommentNo();
+		CommentFile commentFile = boardService.getCommImg(commentNo);
+		
+		
+		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		int boardNo = boardComment.getBoardNo();
+		Board board = boardService.getBoard(boardNo);
+		
+		mav.addObject("userNo", userNo);
+		mav.addObject("board", board);
+		mav.addObject("boardNo", boardNo);
+		mav.addObject("commentList", commentList);
+		mav.setViewName("/board/comment");
+		
+		return mav;
+
+	}
+	
+	@RequestMapping("/commDelete")
+	public ModelAndView commentDelete(BoardComment boardComment, ModelAndView mav) {
+		logger.info("{}", boardComment);
+		int boardNo = boardComment.getBoardNo();
+		logger.info("ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ{}",boardNo);
+		
+		boardService.deleteComm(boardComment);
+		
+		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		
+		mav.addObject("boardNo", boardNo);
+		mav.addObject("commentList", commentList);
+		mav.setViewName("/board/comment");
+		
+		return mav;
+	}
+	
+	@RequestMapping("/commUpdate")
+	public void commUpdate(BoardComment boardComment, Model model) {
+		logger.info("{}", boardComment);
+		model.addAttribute("boardComment", boardComment);
+	}
+	
+//	@RequestMapping("/img")
+//	public void chk(int commNo, Model model) {
+//		CommentFile commentFile = boardService.getCommImg(commNo);
+//		
+//		logger.info("{}", commentFile);
+//		model.addAttribute("img", commentFile);
+//		
+//	}
+	
+	@RequestMapping("/commentList")
+	public void commentList(int boardNo, Model model, HttpSession session) {
+		
+		int userNo = (Integer) session.getAttribute("userNo");
+		Board board = boardService.getBoard(boardNo);
+		
+		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
+		
+		model.addAttribute("board", board);
+		model.addAttribute("commentList", commentList);
+		
+	}
+	
+	@RequestMapping("/updateComment")
+	public ModelAndView updateComment(BoardComment boardComment, MultipartFile file, ModelAndView mav) {
+		logger.info("ㅠㅠㅠㅠㅠ{}", boardComment);
+		logger.info("ㅠㅠㅠㅠㅠ{}", file);
+		
+		if(file == null) {
+			logger.info("null 인에ㅕ");
+			boardService.updateCommCent(boardComment);
+		} else {
+			logger.info("뚱인데여");
+			boardService.updateComment(boardComment, file);
+		}
+		
+		
+		CommentFile commentFile = boardService.getCommImg(boardComment.getCommentNo());
+		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		
+		mav.addObject("commentList", commentList);
+		mav.setViewName("/board/comment");
+		
+		return mav;
+		
+		
+	}
+	
+	@RequestMapping("/deleteImg")
+	public void deleteImg(int commentNo, int boardNo, Model model) {
+		logger.info("{}", commentNo);
+		logger.info("{}", boardNo);
+		
+		
+		boardService.deleteImgFile(commentNo);
+		
+		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
+		
+		logger.info("뭘까여{}", commentList);
+		model.addAttribute("commentList", commentList);
+		
+	}
+	
+	@RequestMapping("/reply")
+	public void reply(BoardComment boardComment) {
+		logger.info("ㅠㅠㅠㅠㅠ{}", boardComment);
+	}
 	
 	
 }	

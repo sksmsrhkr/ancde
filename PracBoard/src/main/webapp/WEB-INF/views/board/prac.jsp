@@ -88,7 +88,7 @@
 
 		
 	}
-	#writeComm, .replyComm{		
+	#writeComm{		
 		background-color: white;
 		margin: 30px; 
 		padding: 10px 20px 35px 20px;
@@ -112,11 +112,6 @@
 		border-radius: 10px;
 		text-align: center;
 		background-color: #6E9FED;
-	}
-	
-	.viewReply{
-		width:60%;
-		margin-left: 30px;
 	}
 	
 </style>
@@ -173,7 +168,6 @@ $(function() {
 		
 		var form = $("#commentFile")[0];
 		var formData = new FormData($("#commentFile")[0]);
-		console.log($("#file")[0].files[0])
 		
 		if($("#chkLock").prop("checked")){
 			formData.append('chkLock', 'y');
@@ -328,6 +322,8 @@ function updateConfirm(th) {
 		formData.append('boardNo','${board.boardNo}');
 		formData.append('commentNo',commentNo);
 		formData.append('userNo','${userNo}');
+		
+		
 		formData.append('file',$("#updatefile")[0].files[0]);
 		formData.append('commContent',$(".updateCount").eq(idx).val());
 		
@@ -347,6 +343,7 @@ function updateConfirm(th) {
 			},error: function (request, status, error) {
 		        console.log("error");
 		    }
+			
 		})
 		
 	
@@ -391,73 +388,11 @@ function reply(th) {
 		var idx = $(".reply").index(th)
 		var commentNo = $(".reply").eq(idx).attr("data-commNo");
 		var boardNo = $(".reply").eq(idx).attr("data-boardNo");
-		var parentNo = $(".reply").eq(idx).attr("data-parentNo");
-		var replyNick = $(".reply").eq(idx).attr("data-userNick");
-		
 		console.log(commentNo)
-		console.log(replyNick)
 		console.log(boardNo)
-		console.log(parentNo)
 		
-		$(".replyComm").hide()
-		$(th).parents(".upBox").find(".replyComm").show()
-}
+		$(".replyComm").show()
 
-function replyBtn(th) {
-	
-		console.log("click")
-		var idx = $(".replyBtn").index(th)
-		var commentNo = $(".replyBtn").eq(idx).attr("data-commNo");
-		var boardNo = $(".replyBtn").eq(idx).attr("data-boardNo");
-		var parentNo = $(".replyBtn").eq(idx).attr("data-parentNo");
-		var replyNick = $(".replyBtn").eq(idx).attr("data-userNick");
-	
-		console.log(commentNo)
-		console.log(replyNick)
-		console.log(boardNo)
-		console.log(parentNo)
-		console.log(${userNo})
-		
-		console.log($(".replylContent").eq(idx).val())
-		
-		console.log($(".reLock").eq(idx).prop("checked"))
-		
-		var form = $(".replyFile")[0];
-		var formData = new FormData($(".replyFile")[0]);
-		console.log($("#replyfile")[0].files[0])
-		
-		if($(".reLock").eq(idx).prop("checked")){
-			formData.append('chkLock', 'y');
-		} else{
-			formData.append('chkLock',  'n');
-		}
-		
-		formData.append('boardNo','${board.boardNo}');
-		formData.append('commentNo',commentNo);
-		formData.append('userNo','${userNo}');
-		formData.append('replyNick',replyNick);
-		formData.append('parentNo',parentNo);
-		formData.append('file',$("#replyfile")[0].files[0]);
-		formData.append('commContent',$(".replylContent").eq(idx).val());
-		
-		$.ajax({
-			type : 'post',
-			url : '/board/reply',
-			data : formData,
-			contentType : false,
-			processData : false,
-	        cache:false,
-	        success: function(data) {
-				console.log("댓글 성공")
-				console.log(data)
-// 				$(".commentList").html(data)
-				
-					
-			},error: function (request, status, error) {
-		        console.log("error");
-		    }
-			
-		})
 }
 
 
@@ -508,7 +443,6 @@ function replyBtn(th) {
 	<div  id="commentBox">
 		<div class="commentList">
 			<c:forEach var="commList" items="${commentList}">
-				
 				<c:choose>
 				<c:when test="${commList.CHK_LOCK eq 'y' && commList.USER_NO ne userNo && board.userNo ne userNo}">
 					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" 
@@ -517,12 +451,10 @@ function replyBtn(th) {
 				</c:when>
 				
 				
-				<c:when test="${commList.CHK_LOCK eq 'n'}">	
-					
+				<c:when test="${commList.CHK_LOCK eq 'n'}">				
 					<div class="upBox">
 					<div style="float: right;">
-						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
-						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  >답글</span>	
+						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" >답글</span>	
 					<c:if test="${commList.USER_NO eq userNo}">					
 						<span onclick="commUpdate(this)" class="commUpdate" data-commNo="${commList.COMMENT_NO}" data-boardNo="${boardNo}" 
 						data-commContent="${commList.COMM_CONTENT}" data-chkLock="${commList.CHK_LOCK}" data-comImg="${commList.COMFILE_STORED}" >수정</span>				
@@ -532,45 +464,34 @@ function replyBtn(th) {
 						<span>신고</span>	
 					</c:if>
 					</div>
-						<c:if test="${commList.STEP eq 1 }">
-							<div class="viewReply">
-							<span>${commList.USER_NICK}</span>
+					<span>${commList.USER_NICK}</span>
+					<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
+					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
 
-								<div style="white-spac: pre-wrap"><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
-
-							<c:if test="${commList.COMFILE_STORED  ne null}">
-								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
-							</c:if>
-							</div>
+					
+						<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>
+						<c:if test="${commList.COMFILE_STORED  ne null}">
+							<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 						</c:if>
-						<c:if test="${commList.STEP eq 0 }">
-							<span>${commList.USER_NICK}</span>
-							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
-								<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>		
-							<c:if test="${commList.COMFILE_STORED  ne null}">
-								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
-							</c:if>
-						</c:if>
-				
 						
-						<form class="replyFile">
+						<form class="replyComFile" name="commentFile">
 						<div class="replyComm">
 							<input type="hidden" value="${board.boardNo}" id="boardNo">
 							<textarea  class="replyContent" onkeyup="count()" maxlength="{200}" style="border: none; width:100%; height: 100px; resize: none; margin-bottom:5px;"
 							 placeholder="인터넷은 함께하는 공간입니다.&#13;&#10;타인을 비방하거나 명예를 훼손하는 댓글은 운영원칙에 따라 제재를 받을 수 있습니다"></textarea>
 							<div  style="float:left;">
 								<label for="file" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
-								<input type="file" id="replyfile" name='replyfile'  accept="image/*" style="display: none;">
+								<input type="file" class="replyfile" name='replyfile'  accept="image/*" style="display: none;">
 							</div>
 							
 							<div style="float:right;"  >
+								
 									<span class="replytextCount">0</span>
 									<span class="replytextTotal">/200</span>	&nbsp;&nbsp;					
+								
 								비밀 댓글
 								<input type="checkbox" class="reLock" name="reLock">
-								&nbsp;&nbsp;<button type="button" onclick="replyBtn(this)" class="replyBtn" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
-						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}">등록</button></div>
+								&nbsp;&nbsp;<button type="button"  class="replyBtn">등록</button></div>
 							</div>
 						</form>
 					
@@ -610,7 +531,7 @@ function replyBtn(th) {
 						</div>
 					</div>
 				</c:when>
-
+				
 				
 				<c:otherwise>
 					<div class="upBox">
@@ -625,28 +546,15 @@ function replyBtn(th) {
 						<span>신고</span>	
 					</c:if>
 					</div>
-						<c:if test="${commList.STEP eq 1 }">
-							<div class="viewReply">
-							<span>${commList.USER_NICK}</span>
-							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
-							<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
-							
-							<c:if test="${commList.COMFILE_STORED  ne null}">
-								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
-							</c:if>
-							</div>
+					<span>${commList.USER_NICK}</span>
+					<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
+					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+					
+					<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><c:out value="${commList.COMM_CONTENT}" /></div>
+						<c:if test="${commList.COMFILE_STORED  ne null}">
+							<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 						</c:if>
-						<c:if test="${commList.STEP eq 0 }">
-							<span>${commList.USER_NICK}</span>
-							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
-								<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><c:out value="${commList.COMM_CONTENT}" /></div>		
-							<c:if test="${commList.COMFILE_STORED  ne null}">
-								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
-							</c:if>
-						</c:if>
-						
+					
 					
 							
 						<div class="updateContent">
