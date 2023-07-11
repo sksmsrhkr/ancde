@@ -140,4 +140,32 @@
   		DELETE FROM commentfile WHERE comment_no = #{commentNo}
   	</delete>
   	
+  	<insert id="insertReply" parameterType="BoardComment">
+  		 <selectKey order="BEFORE" resultType="int"
+			keyProperty="commentNo">
+			SELECT board_comment_no_seq.nextval FROM dual
+		</selectKey>
+  		INSERT INTO 
+  		board_comment (comment_no, comm_content, board_no, user_no, chk_lock, step, parent_no, reply_no, reply_nick)
+  		VALUES
+  		( #{commentNo}
+  		, #{commContent}
+  		, #{boardNo}
+  		, #{userNo}
+  		, #{chkLock}
+  		, #{step}
+  		, #{parentNo}
+  		, #{replyNo}
+  		, #{replyNick}
+  		)
+  	</insert>
+  	
+  	<update id="updateBoard" parameterType="Board">
+  		UPDATE board SET title= #{title}, content= #{content} WHERE board_no= #{boardNo}
+  	</update>
+  	
+  	<delete id="deleteBoard" parameterType="int">
+  		DELETE FROM board WHERE board_no = #{boardNo}
+  	</delete>
+  	
   </mapper>

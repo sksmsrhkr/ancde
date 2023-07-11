@@ -55,6 +55,12 @@ public interface BoardDao {
 
 	public void deleteImgFile(int commentNo);
 
+	public void insertReply(BoardComment boardComment);
+
+	public void updateBoard(Board board);
+
+	public void deleteBoard(int boardNo);
+
 	
 
 

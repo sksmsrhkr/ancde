@@ -47,6 +47,16 @@ public interface BoardService {
 
 	public void deleteImgFile(int commentNo);
 
+	public void insertReply(BoardComment boardComment, MultipartFile file);
+
+	public void updateBoard(Board board);
+
+	public void deleteBoard(int boardNo);
+
+	
+
+
+
 
 
 

@@ -89,7 +89,9 @@
 		margin: 30px; 
 		padding: 10px 20px 35px 20px;
 	}
-
+	img{
+		max-width: 500px;
+	}
 </style>
 
 <h2 style="margin: 20px;">${board.title}</h2>
@@ -110,7 +112,14 @@
 					<span>${commList.USER_NICK}</span>
 					<c:if test="${commList.USER_NO eq userNo}"><button type="button" id="writerBtn">나</button></c:if>
 					<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+						<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+							<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+							<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+							<c:if test="${today - commDate le 2}">
+							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+						</c:if>
+					<br>
 						<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>
 						<c:if test="${commList.COMFILE_STORED  ne null}">
 							<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
@@ -124,7 +133,14 @@
 					<span>${commList.USER_NICK}</span>
 					<c:if test="${commList.USER_NO eq userNo}"><button type="button" id="writerBtn">나</button></c:if>
 					<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+						<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+							<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+							<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+							<c:if test="${today - commDate le 2}">
+							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+						</c:if>
+					<br>
 					
 					<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><c:out value="${commList.COMM_CONTENT}" /></div>
 						<c:if test="${commList.COMFILE_STORED  ne null}">

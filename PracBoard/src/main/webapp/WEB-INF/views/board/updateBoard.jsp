@@ -35,7 +35,7 @@ $(function() {
 	
 	$("#writeContainer").on("click","#writeBtn", function(){
 		console.log("click")
-		if(confirm('게시글을 저장하시겠습니까?') == true){
+		if(confirm('게시글을 수정하시겠습니까?') == true){
 			console.log("ok")
 		} else{
 			return;
@@ -80,9 +80,10 @@ $(function() {
 </style>
 
 <div id="writeContainer">
-<form action="./write" method="post">
-	<input type="text" name="title" id="title" placeholder="제목" required><br>	
-	<textarea style="display: none" id="content" name="content"></textarea><br>
+<form action="./updateBoard" method="post">
+	<input type="hidden" name="boardNo" value="${board.boardNo}">
+	<input type="text" name="title" id="title" value="${board.title}" required><br>	
+	<textarea style="display: none" id="content" name="content">${board.content}</textarea><br>
 	<button type="submit" id="writeBtn">작성</button>
 </form>
 </div>

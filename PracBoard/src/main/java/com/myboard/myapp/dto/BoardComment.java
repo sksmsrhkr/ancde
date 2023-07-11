@@ -10,14 +10,21 @@ public class BoardComment {
 	private String chkLock;
 	private Date commDate;
 	private int step;
-	private int parent_no;
-	private int reply_no;
+	private int parentNo;
+	private int replyNo;
 	private String replyNick;
 	
 	public BoardComment() {}
 
+	@Override
+	public String toString() {
+		return "BoardComment [commentNo=" + commentNo + ", commContent=" + commContent + ", boardNo=" + boardNo
+				+ ", userNo=" + userNo + ", chkLock=" + chkLock + ", commDate=" + commDate + ", step=" + step
+				+ ", parentNo=" + parentNo + ", replyNo=" + replyNo + ", replyNick=" + replyNick + "]";
+	}
+
 	public BoardComment(int commentNo, String commContent, int boardNo, int userNo, String chkLock, Date commDate,
-			int step, int parent_no, int reply_no, String replyNick) {
+			int step, int parentNo, int replyNo, String replyNick) {
 		super();
 		this.commentNo = commentNo;
 		this.commContent = commContent;
@@ -26,16 +33,9 @@ public class BoardComment {
 		this.chkLock = chkLock;
 		this.commDate = commDate;
 		this.step = step;
-		this.parent_no = parent_no;
-		this.reply_no = reply_no;
+		this.parentNo = parentNo;
+		this.replyNo = replyNo;
 		this.replyNick = replyNick;
-	}
-
-	@Override
-	public String toString() {
-		return "BoardComment [commentNo=" + commentNo + ", commContent=" + commContent + ", boardNo=" + boardNo
-				+ ", userNo=" + userNo + ", chkLock=" + chkLock + ", commDate=" + commDate + ", step=" + step
-				+ ", parent_no=" + parent_no + ", reply_no=" + reply_no + ", replyNick=" + replyNick + "]";
 	}
 
 	public int getCommentNo() {
@@ -94,20 +94,20 @@ public class BoardComment {
 		this.step = step;
 	}
 
-	public int getParent_no() {
-		return parent_no;
+	public int getParentNo() {
+		return parentNo;
 	}
 
-	public void setParent_no(int parent_no) {
-		this.parent_no = parent_no;
+	public void setParentNo(int parentNo) {
+		this.parentNo = parentNo;
 	}
 
-	public int getReply_no() {
-		return reply_no;
+	public int getReplyNo() {
+		return replyNo;
 	}
 
-	public void setReply_no(int reply_no) {
-		this.reply_no = reply_no;
+	public void setReplyNo(int replyNo) {
+		this.replyNo = replyNo;
 	}
 
 	public String getReplyNick() {
@@ -117,6 +117,8 @@ public class BoardComment {
 	public void setReplyNick(String replyNick) {
 		this.replyNick = replyNick;
 	}
+
+	
 
 	
 

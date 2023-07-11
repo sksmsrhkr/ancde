@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:import url="/WEB-INF/views/layout/header.jsp" />
+<%-- <c:import url="/WEB-INF/views/layout/sidebar.jsp" /> --%>
 
 <style>
 
@@ -48,6 +49,20 @@
   	padding-top:3px;
   }
   
+  	#btnWrite{
+		width:70px;
+		height: 40px;	
+		border: 3px solid #AFDDFA;
+		background-color: white;
+		text-align: center;
+		padding-top: 5px;
+		border-radius: 10px;
+		float:right;
+		color: #6E9FED;
+		margin-top: 15px;
+		margin-right: 5px;
+	}
+  
 </style>
 
 <script type="text/javascript">
@@ -82,7 +97,7 @@ function openComm(url, name){
 					<fmt:parseNumber value="${list.WRITE_DATE.time / (1000*60*60*24)}" integerOnly="true" var="boardDate" /><!-- 게시글 작성날짜를 숫자로 -->
 					<c:if test="${today - boardDate le 2}">
 					<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
-			</c:if>
+					</c:if>
 			&nbsp;&nbsp;
 			<c:if test="${list.COMMENTCNT ne 0}">
 			<a href="javascript:openComm('./commentList?boardNo=${list.BOARD_NO}', 'popup');"><button id="comBtn">${list.COMMENTCNT}</button></a>

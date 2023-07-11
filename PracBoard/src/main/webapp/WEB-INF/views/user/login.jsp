@@ -8,13 +8,22 @@
 
 <style>
 .box1{
-	width: 70%;
+	width: 40%;
 	margin: auto;
-	margin-top: 50px;
-	border: 1px solid black;
+	margin-top: 200px;
+	border: none;
 	font-family: 'SBAggroL';
 	padding: 50px;
 	text-align: center;
+}
+
+#id, #pw {
+	width: 30px;
+ 	float: left; 
+}
+
+#userId, #userPw{
+
 }
 </style>
 
@@ -23,8 +32,8 @@
 
 <form action="./login" method="post">
 	<div class="box1">
-	id <input type="text" name="userId"><br>
-	pw <input type="text" name="userPw"><br>
+	<div id="id">id </div><input type="text" name="userId" style="margin-bottom: 10px;" ><br>
+	<div id="pw">pw </div><input type="password" name="userPw" id="userPw" style="margin-bottom: 10px;"><br>
 	<button>로그인</button>
 	</div>
 

@@ -57,7 +57,7 @@
 		border-radius: 10px;
 	}
 	
-	#commentBtn{
+	#commentBtn , .replyBtn{
 		font-size: 14px;
 		border: 2px solid #6E9FED;
 		color: white;
@@ -94,10 +94,9 @@
 		padding: 10px 20px 35px 20px;
 	}
 	
-	#commfile{
-		width: 150px;
-		height: 150px;
-	}
+ 	#commfile{ 
+ 		max-width: 150px;
+	} 
 	
 	.updateContent{
 		background-color: white;
@@ -114,9 +113,16 @@
 		background-color: #6E9FED;
 	}
 	
+	.reIcon{
+		float: left;
+		width: 20px;
+		padding-top: 5px;
+		padding-left: 10px;
+		
+	}
+	
 	.viewReply{
-		width:60%;
-		margin-left: 30px;
+		margin-left: 40px;
 	}
 	
 </style>
@@ -246,7 +252,7 @@ $(function() {
 	
 <script>	
 	function commUpdate(th) {
-			
+		
 			var idx = $(".commUpdate").index(th)
 			console.log("click")
 			var commentNo = $(".commUpdate").eq(idx).attr("data-commNo");
@@ -265,6 +271,7 @@ $(function() {
 			console.log($(th).parents(".upBox").find(".updateContent").val())
 			$(".updateContent").hide()
 			$(th).parents(".upBox").find(".updateContent").show()
+			$(".replyComm").hide()	
 		
 	}
 </script>
@@ -280,8 +287,23 @@ function count(){
 	if (content.length > 200) {
 		$("#commentContent").val($("#commentContent").val().substring(0, 200));
 		alert('글자수는 200자까지 입력 가능합니다.');
-    };
-	    
+    };	    
+}
+function replyCount(th){
+	console.log("click")
+	var idx = $(".replyCount").index(th)
+	let replyContent = $(".replyCount").eq(idx).val();
+	console.log(replyContent)
+	
+	   if (replyContent.length == 0 || replyContent == '') {
+	    	$('.replytextCount').text('0');
+	    } else {
+	    	$('.replytextCount').text(replyContent.length);
+	    }
+	if (replyContent.length > 200) {
+		$(".replyCount").val($(".replyCount").val().substring(0, 200));
+		alert('글자수는 200자까지 입력 가능합니다.');
+    };	    
 }
 
 function updateCount(th){
@@ -378,13 +400,6 @@ function deleteImg(th) {
 			})
 }
 
-$(function(){
-	$("#numbers").on("click","#modal", function(){
-		console.log("modal")
-	})
-	
-})
-
 function reply(th) {
 	
 		console.log("click")
@@ -393,14 +408,18 @@ function reply(th) {
 		var boardNo = $(".reply").eq(idx).attr("data-boardNo");
 		var parentNo = $(".reply").eq(idx).attr("data-parentNo");
 		var replyNick = $(".reply").eq(idx).attr("data-userNick");
+		var replyNo = $(".reply").eq(idx).attr("data-replyNo");
 		
+		console.log($(".replyCount").eq(idx).val())
 		console.log(commentNo)
 		console.log(replyNick)
+		console.log(replyNo)
 		console.log(boardNo)
 		console.log(parentNo)
 		
 		$(".replyComm").hide()
 		$(th).parents(".upBox").find(".replyComm").show()
+		$(".updateContent").hide()
 }
 
 function replyBtn(th) {
@@ -411,20 +430,12 @@ function replyBtn(th) {
 		var boardNo = $(".replyBtn").eq(idx).attr("data-boardNo");
 		var parentNo = $(".replyBtn").eq(idx).attr("data-parentNo");
 		var replyNick = $(".replyBtn").eq(idx).attr("data-userNick");
-	
-		console.log(commentNo)
-		console.log(replyNick)
-		console.log(boardNo)
-		console.log(parentNo)
-		console.log(${userNo})
+		var replyNo = $(".reply").eq(idx).attr("data-replyNo");
 		
-		console.log($(".replylContent").eq(idx).val())
-		
-		console.log($(".reLock").eq(idx).prop("checked"))
-		
-		var form = $(".replyFile")[0];
-		var formData = new FormData($(".replyFile")[0]);
-		console.log($("#replyfile")[0].files[0])
+		console.log("파일입니당")
+		 console.log($("#rfile")[0].files[0])
+		var formData = new FormData();
+
 		
 		if($(".reLock").eq(idx).prop("checked")){
 			formData.append('chkLock', 'y');
@@ -432,13 +443,20 @@ function replyBtn(th) {
 			formData.append('chkLock',  'n');
 		}
 		
+	
 		formData.append('boardNo','${board.boardNo}');
-		formData.append('commentNo',commentNo);
+		formData.append('commentNo',$(".replyBtn").eq(idx).attr("data-commNo"));
 		formData.append('userNo','${userNo}');
-		formData.append('replyNick',replyNick);
-		formData.append('parentNo',parentNo);
-		formData.append('file',$("#replyfile")[0].files[0]);
-		formData.append('commContent',$(".replylContent").eq(idx).val());
+		formData.append('replyNick',$(".replyBtn").eq(idx).attr("data-userNick"));
+		formData.append('replyNo',$(".reply").eq(idx).attr("data-replyNo"));
+		if(parentNo==0){
+			formData.append('parentNo',$(".replyBtn").eq(idx).attr("data-commNo"));
+		} else{
+		formData.append('parentNo',$(".replyBtn").eq(idx).attr("data-parentNo"));
+		}
+		formData.append('file', $("#rfile")[0].files[0]);
+		formData.append('commContent',$(".replyCount").eq(idx).val());
+		formData.append('step', 1);
 		
 		$.ajax({
 			type : 'post',
@@ -450,7 +468,7 @@ function replyBtn(th) {
 	        success: function(data) {
 				console.log("댓글 성공")
 				console.log(data)
-// 				$(".commentList").html(data)
+				$(".commentList").html(data)
 				
 					
 			},error: function (request, status, error) {
@@ -511,9 +529,31 @@ function replyBtn(th) {
 				
 				<c:choose>
 				<c:when test="${commList.CHK_LOCK eq 'y' && commList.USER_NO ne userNo && board.userNo ne userNo}">
-					<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" 
-					pattern="yy.MM.dd HH:mm"/></span><br>
-					<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
+					<c:if test="${commList.STEP eq 1 }">
+						<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
+						<div class="viewReply">
+						<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+						<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+							<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+							<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+							<c:if test="${today - commDate le 2}">
+							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+						</c:if>
+						<br>
+						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
+						</div>
+					</c:if>
+					<c:if test="${commList.STEP eq 0 }">
+						<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+						<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+							<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+							<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+							<c:if test="${today - commDate le 2}">
+							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+						</c:if>
+						<br>
+						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
+					</c:if>
 				</c:when>
 				
 				
@@ -522,7 +562,7 @@ function replyBtn(th) {
 					<div class="upBox">
 					<div style="float: right;">
 						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
-						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  >답글</span>	
+						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  data-replyNo="${commList.USER_NO}" >답글</span>	
 					<c:if test="${commList.USER_NO eq userNo}">					
 						<span onclick="commUpdate(this)" class="commUpdate" data-commNo="${commList.COMMENT_NO}" data-boardNo="${boardNo}" 
 						data-commContent="${commList.COMM_CONTENT}" data-chkLock="${commList.CHK_LOCK}" data-comImg="${commList.COMFILE_STORED}" >수정</span>				
@@ -532,12 +572,21 @@ function replyBtn(th) {
 						<span>신고</span>	
 					</c:if>
 					</div>
+					
 						<c:if test="${commList.STEP eq 1 }">
+							<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
 							<div class="viewReply">
 							<span>${commList.USER_NICK}</span>
-
-								<div style="white-spac: pre-wrap"><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
-
+							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
+							<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+								<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+										<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+										<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+										<c:if test="${today - commDate le 2}">
+										<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+								</c:if>
+							<br>
+									<div style="white-spac: pre-wrap"><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
@@ -546,22 +595,29 @@ function replyBtn(th) {
 						<c:if test="${commList.STEP eq 0 }">
 							<span>${commList.USER_NICK}</span>
 							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+										<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+										<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+										<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+										<c:if test="${today - commDate le 2}">
+										<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+								</c:if>
+								<br>
 								<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>		
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
 						</c:if>
 				
-						
-						<form class="replyFile">
+							
 						<div class="replyComm">
+						<form class="replyCommentFile">
 							<input type="hidden" value="${board.boardNo}" id="boardNo">
-							<textarea  class="replyContent" onkeyup="count()" maxlength="{200}" style="border: none; width:100%; height: 100px; resize: none; margin-bottom:5px;"
+							<textarea  class="replyCount" onkeyup="replyCount(this)" maxlength="{200}" style="border: none; width:100%; height: 100px; resize: none; margin-bottom:5px;"
 							 placeholder="인터넷은 함께하는 공간입니다.&#13;&#10;타인을 비방하거나 명예를 훼손하는 댓글은 운영원칙에 따라 제재를 받을 수 있습니다"></textarea>
 							<div  style="float:left;">
-								<label for="file" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
-								<input type="file" id="replyfile" name='replyfile'  accept="image/*" style="display: none;">
+								<label for="rfile" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
+								<input type="file" id="rfile" name='rfile'  accept="image/*" style="display: none;">
 							</div>
 							
 							<div style="float:right;"  >
@@ -570,10 +626,11 @@ function replyBtn(th) {
 								비밀 댓글
 								<input type="checkbox" class="reLock" name="reLock">
 								&nbsp;&nbsp;<button type="button" onclick="replyBtn(this)" class="replyBtn" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
-						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}">등록</button></div>
-							</div>
+						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}" data-replyNo="${commList.USER_NO}">등록</button></div>
 						</form>
-					
+						</div>
+						
+						
 						<div class="updateContent">
 						<form class="updateFile">
 							<input type="hidden" id="commNo" value="${commList.COMMENT_NO}">
@@ -615,7 +672,8 @@ function replyBtn(th) {
 				<c:otherwise>
 					<div class="upBox">
 					<div style="float: right;">
-						<span>답글</span>	
+						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
+						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  data-replyNo="${commList.USER_NO}" >답글</span>	
 					<c:if test="${commList.USER_NO eq userNo}">					
 						<span onclick="commUpdate(this)" class="commUpdate" data-commNo="${commList.COMMENT_NO}" data-boardNo="${boardNo}" 
 						data-commContent="${commList.COMM_CONTENT}" data-chkLock="${commList.CHK_LOCK}" data-comImg="${commList.COMFILE_STORED}">수정</span>				
@@ -626,27 +684,64 @@ function replyBtn(th) {
 					</c:if>
 					</div>
 						<c:if test="${commList.STEP eq 1 }">
+						
+						<div>
+							<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
 							<div class="viewReply">
 							<span>${commList.USER_NICK}</span>
 							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+								<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+										<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+										<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+										<c:if test="${today - commDate le 2}">
+										<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+								</c:if>
+								<br>
 							<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
 							
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
 							</div>
+						</div>
 						</c:if>
 						<c:if test="${commList.STEP eq 0 }">
 							<span>${commList.USER_NICK}</span>
 							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
-								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span><br>
+								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
+								<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+										<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+										<fmt:parseNumber value="${commList.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="commDate" /><!-- 게시글 작성날짜를 숫자로 -->
+										<c:if test="${today - commDate le 2}">
+										<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
+								</c:if>
+								<br>
 								<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><c:out value="${commList.COMM_CONTENT}" /></div>		
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
 						</c:if>
 						
+						<div class="replyComm">
+						<form class="replyCommentFile">
+							<input type="hidden" value="${board.boardNo}" id="boardNo">
+							<textarea  class="replyCount" onkeyup="replyCount(this)" maxlength="{200}" style="border: none; width:100%; height: 100px; resize: none; margin-bottom:5px;"
+							 placeholder="인터넷은 함께하는 공간입니다.&#13;&#10;타인을 비방하거나 명예를 훼손하는 댓글은 운영원칙에 따라 제재를 받을 수 있습니다"></textarea>
+							<div  style="float:left;">
+								<label for="rfile" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
+								<input type="file" id="rfile" name='rfile'  accept="image/*" style="display: none;">
+							</div>
+							
+							<div style="float:right;"  >
+									<span class="replytextCount">0</span>
+									<span class="replytextTotal">/200</span>	&nbsp;&nbsp;					
+								비밀 댓글
+								<input type="checkbox" class="reLock" name="reLock">
+								&nbsp;&nbsp;<button type="button" onclick="replyBtn(this)" class="replyBtn" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
+						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}" data-replyNo="${commList.USER_NO}">등록</button></div>
+						</form>
+						</div>
 					
 							
 						<div class="updateContent">
@@ -713,8 +808,8 @@ function replyBtn(th) {
 	<!-- 댓글 끝 -->	
 	<div style="float:right; margin-top: 30px;">
 	<c:if test="${board.userNo eq userNo }" >
-		<button id="updateBoard">수정</button>
-		<button id="deleteBoard">삭제</button>
+		<a href="./updateBoard?boardNo=${board.boardNo}"><button id="updateBoard">수정</button></a>
+		<a href="./deleteBoard?boardNo=${board.boardNo}"><button id="deleteBoard">삭제</button></a>
 	</c:if>
 	</div>
 	</div>

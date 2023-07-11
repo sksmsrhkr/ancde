@@ -155,6 +155,7 @@ public class BoardController {
 		
 		logger.info("{}", boardComment);
 		logger.info("{}", file.getOriginalFilename());
+		logger.info("{}", file);
 		
 		boardService.insertComm(boardComment, file);
 		int commentNo = boardComment.getCommentNo();
@@ -261,8 +262,47 @@ public class BoardController {
 	}
 	
 	@RequestMapping("/reply")
-	public void reply(BoardComment boardComment) {
+	public ModelAndView reply(BoardComment boardComment, MultipartFile file, ModelAndView mav) {
 		logger.info("ㅠㅠㅠㅠㅠ{}", boardComment);
+		
+			boardService.insertReply(boardComment, file);
+		
+		
+		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		
+		mav.addObject("commentList", commentList);
+		mav.setViewName("/board/comment");
+		
+		return mav;
+	}
+	
+	@GetMapping("updateBoard")
+	public void boardUpdate(int boardNo, Model model) {
+		logger.info("{}", boardNo);
+		
+		Board board = boardService.getBoard(boardNo);
+		
+		logger.info("{}", board);
+		
+		model.addAttribute("board", board);
+	}
+	
+	@PostMapping("updateBoard")
+	public String updateBoard(Board board){
+		
+		logger.info("{}", board);
+		
+		boardService.updateBoard(board);
+		
+		return "redirect: ./view?boardNo="+board.getBoardNo();
+	}
+	
+	@RequestMapping("deleteBoard")
+	public String deleteBoard(int boardNo) {
+		
+		boardService.deleteBoard(boardNo);
+		
+		return "redirect: ./list";
 	}
 	
 	
