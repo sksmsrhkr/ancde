@@ -27,6 +27,8 @@ import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.CommentFile;
 import com.myboard.myapp.dto.User;
+import com.myboard.myapp.dto.UserFile;
+import com.myboard.myapp.user.service.face.UserService;
 import com.myboard.myapp.util.Paging;
 
 @Controller
@@ -36,7 +38,7 @@ public class BoardController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired BoardService boardService;
-	
+	@Autowired UserService userService;
 	
 	@RequestMapping("/list")
 	public void BoardList(@RequestParam(defaultValue = "0") int curPage, Model model ) {
@@ -44,7 +46,7 @@ public class BoardController {
 		Paging paging = boardService.getTotalPage(curPage);
 		
 		logger.info("Paging: {}", paging);
-		logger.info("굿긋");
+		logger.info("굿긋 {}", paging.getTotalCount());
 		
 		List<Map<String, Object>> list = boardService.selectList(paging);
 
@@ -79,7 +81,9 @@ public class BoardController {
 		
 		logger.info("board : {}", board);
 		logger.info("commentList : {}", commentList);
+		UserFile userFile = userService.getUserImg(userNo);
 		
+		model.addAttribute("userfile", userFile);
 		model.addAttribute("board", board);
 		model.addAttribute("boardNo", boardNo);
 		model.addAttribute("writerNick", writerNick);

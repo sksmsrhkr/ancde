@@ -34,9 +34,9 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public Paging getTotalPage(int curPage) {
 		
-		int totalPage =  boardDao.getTotalPaging(curPage);
+		int totalCount =  boardDao.getTotalPaging(curPage);
 		
-		Paging paging = new Paging(totalPage, curPage);
+		Paging paging = new Paging(totalCount, curPage);
 		
 		return paging;
 	}

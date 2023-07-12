@@ -17,4 +17,44 @@
   	WHERE user_id = #{userId} AND user_pw = #{userPw}
   </select>
   
+  <select id="getUser" parameterType="int" resultType="User">
+  	SELECT * FROM user_tb WHERE user_no = #{userNo}
+  </select>
+
+	<select id="getCntBoard" parameterType="int" resultType="int">
+		SELECT count(*) FROM board WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="getBoardList" parameterType="Map" resultType="Map">
+		SELECT * FROM
+    	(select rownum rnum, b.*
+        FROM(
+        SELECT title, board_no, write_date, hit
+        ,(SELECT count(*) FROM  board_comment bc WHERE bc.board_no = b.board_no
+        ) commentCnt
+        FROM board b
+        WHERE user_no = #{userNo}
+        order by board_no DESC
+        ) b
+        order by rnum
+        )WHERE rnum BETWEEN #{paging.startNo} and #{paging.endNo}
+	</select>
+	
+	<insert id="insertUserFile" parameterType="UserFile">
+		INSERT INTO userfile 
+		(user_no,
+		 userfile_no,
+		 userfile_stored)
+		VALUES
+		(#{userNo},
+		 userfile_no_seq.nextval,
+		 #{userfileStored}
+		)
+	</insert>
+	
+	<select id="getUserProfile" parameterType="int" resultType="UserFile">
+		SELECT * FROM userfile WHERE user_no = #{userNo}
+	</select>
+
+  
   </mapper>

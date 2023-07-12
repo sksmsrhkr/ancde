@@ -125,6 +125,13 @@
 		margin-left: 40px;
 	}
 	
+	#profileImg{
+		max-width: 60px;
+		border-radius: 100%;
+		float: left;
+		margin-right: 10px;
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -483,9 +490,14 @@ function replyBtn(th) {
 	
 <div class="container">
 	<h3 style="font-family: 'SBAggroM'; text-align: center; ">${board.title}</h3>
+	<br>
 	<!-- 작성자, 글 정보 -->
 	<div>
-			<h6><i class="bi bi-person-circle"></i>&nbsp;&nbsp;${writerNick}</h6>
+		<div id="profile">
+			<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
+		</div>
+<!-- 			<h6><i class="bi bi-person-circle"></i>&nbsp;&nbsp;</h6> -->
+			<h5>${writerNick}</h5>
 			<span style="font-size: 13px;"><fmt:formatDate value="${board.writeDate}" pattern="yy/MM/dd HH:mm:SS"/></span>
 		
 		<div class="numbers" style="float:right">
@@ -593,6 +605,7 @@ function replyBtn(th) {
 							</div>
 						</c:if>
 						<c:if test="${commList.STEP eq 0 }">
+						<div>
 							<span>${commList.USER_NICK}</span>
 							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
 								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
@@ -604,6 +617,7 @@ function replyBtn(th) {
 								</c:if>
 								<br>
 								<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>		
+						</div>
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
