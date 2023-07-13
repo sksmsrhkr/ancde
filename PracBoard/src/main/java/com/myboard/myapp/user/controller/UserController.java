@@ -56,7 +56,7 @@ public class UserController {
 			session.setAttribute("userNo", userInfo.getUserNo());
 			session.setAttribute("userNick", userInfo.getUserNick());
 			
-			return "redirect:./mypage";			
+			return "redirect: /";			
 		} else {
 			return "redirect:./login";
 		}
@@ -98,14 +98,22 @@ public class UserController {
 	}
 	
 	@PostMapping("/userInfo")
-	public String editUser(HttpSession session, MultipartFile file) {
+	public String editUser(HttpSession session, MultipartFile file, User user) {
 		logger.info(file.getOriginalFilename());
+		logger.info("유젖 정보 {}", user);
 		
 		int userNo = (Integer) session.getAttribute("userNo");
 		userService.insertProfile(userNo, file);
 		
 		
 		return "redirect: ./mypage";
+	}
+	
+	@RequestMapping("/logout")
+	public String userLogout(HttpSession session) {
+		session.invalidate();
+		
+		return "main";
 	}
 
 }

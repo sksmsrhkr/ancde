@@ -15,8 +15,6 @@ public interface UserDao {
 
 	public User getUserInfo(User user);
 
-	public User getUser(int userNo);
-
 	public int getCntBoard(int userNo);
 
 	public List<Board> getBoardList(@Param("paging") Paging paging, @Param("userNo") int userNo);
@@ -24,5 +22,7 @@ public interface UserDao {
 	public void insertUserFile(UserFile userFile);
 
 	public UserFile getUserProfile(int userNo);
+
+	public User getUser(int userNo);
 
 }

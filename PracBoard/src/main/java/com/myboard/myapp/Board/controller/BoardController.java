@@ -309,5 +309,11 @@ public class BoardController {
 		return "redirect: ./list";
 	}
 	
+	@RequestMapping("/commentCnt")
+	public void commCnt(int boardNo, Model model) {
+		logger.info("{}",boardNo);
+		int commentCnt = boardService.getCntComm(boardNo);
+		model.addAttribute("cntComment", commentCnt);
+	}
 	
 }	

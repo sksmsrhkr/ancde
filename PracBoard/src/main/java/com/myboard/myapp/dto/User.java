@@ -10,7 +10,7 @@ public class User {
     private String userPw;
     private String userNick;
     private String userGender;
-    private Date userBirth;
+    private String userBirth;
     private String userEmail;
     private int userPostcode; 
     private String userAddr1;
@@ -30,7 +30,7 @@ public class User {
 	}
 
 	public User(int userNo, String userName, String userId, String userPw, String userNick, String userGender,
-			Date userBirth, String userEmail, int userPostcode, String userAddr1, String userAddr2, String userAddr3,
+			String userBirth, String userEmail, int userPostcode, String userAddr1, String userAddr2, String userAddr3,
 			String userPhone, Date userJoindate) {
 		super();
 		this.userNo = userNo;
@@ -97,11 +97,11 @@ public class User {
 		this.userGender = userGender;
 	}
 
-	public Date getUserBirth() {
+	public String getUserBirth() {
 		return userBirth;
 	}
 
-	public void setUserBirth(Date userBirth) {
+	public void setUserBirth(String userBirth) {
 		this.userBirth = userBirth;
 	}
 
@@ -161,6 +161,7 @@ public class User {
 		this.userJoindate = userJoindate;
 	}
 
+    
 	
     
 

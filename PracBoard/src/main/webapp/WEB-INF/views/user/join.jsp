@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -20,7 +19,7 @@ label {
 }
 </style>
 
-<form action="./userInfo" method="post" enctype="multipart/form-data">
+<form action="./userInfo" method="post">
 	
 	<label for="name">이름</label>
 	<input type="text"id="name" name="userName"><br>
@@ -47,11 +46,9 @@ label {
 	<input type="radio"id="m" name="userGender" value="M">
 	<label for="f">여자</label>
 	<input type="radio" id="f" name="userGender" value="F">
-
 	
-
-	<input type="file" name="file">
-	<button>이미지 제출</button>
+	<button>가입하기</button>
 </form>
 
-<c:import url="/WEB-INF/views/layout/footer.jsp" />
+</body>
+</html>
