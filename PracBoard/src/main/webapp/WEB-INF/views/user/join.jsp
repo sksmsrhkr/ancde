@@ -13,13 +13,38 @@ body{
 
 label {
 	display:inline-block;
-	text-align:center;
-	width:200px;
+	text-align:left;
+	width:30%;
 	font-weight:bold;
+	margin-bottom: 20px;
 }
+
+#gender {
+	display:inline-block;
+	text-align:left;
+	width:28%;
+	font-weight:bold;
+	margin-bottom: 20px;
+}
+
+#joinform{
+	width: 30%;
+	margin: auto;
+	margin-top: 50px;
+}
+
+input{
+	width: 50%;
+}
+
+form{
+	text-align: center;
+}
+
 </style>
 
-<form action="./userInfo" method="post">
+<div id="joinform" >
+<form action="./join" method="post">
 	
 	<label for="name">이름</label>
 	<input type="text"id="name" name="userName"><br>
@@ -41,14 +66,18 @@ label {
 	
 	<label for="phone">휴대폰 번호</label>
 	<input type="text" id="phone" name="userPhone"><br>
+
+	<label for="birth">생년월일</label>
+	<input type="text" id="birth" name="userBirth"><br>
 	
-	<label for="m">남자</label>
-	<input type="radio"id="m" name="userGender" value="M">
-	<label for="f">여자</label>
-	<input type="radio" id="f" name="userGender" value="F">
-	
+	<span id="gender">성별</span>
+	<label for="m" style="width: 15%; text-align: right;">남자</label>
+	<input type="radio"id="m" name="userGender" value="M" style="width: 10%;">
+	<label for="f"  style="width: 15%;text-align: right;" >여자</label>
+	<input type="radio" id="f" name="userGender" value="F" style="width: 10%;">
+	<br>
 	<button>가입하기</button>
 </form>
+</div>
 
-</body>
-</html>
+<c:import url="/WEB-INF/views/layout/footer.jsp" />

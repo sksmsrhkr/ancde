@@ -15,7 +15,7 @@
 	<interceptors>
 		<interceptor>
 			<mapping path="/board/**"/>		
-			<mapping path="/user/**"/>
+			<exclude-mapping path="/user/join" />
 			<exclude-mapping path="/user/login" />
 			<exclude-mapping path="/board/list" />
 			<beans:bean class="com.myboard.myapp.interceptor.Interceptor"/>

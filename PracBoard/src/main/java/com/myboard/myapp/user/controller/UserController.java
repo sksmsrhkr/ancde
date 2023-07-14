@@ -1,5 +1,6 @@
 package com.myboard.myapp.user.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -30,14 +31,19 @@ public class UserController {
 	@Autowired UserService userService;
 	
 	@GetMapping("/join")
-	public void userJoin() {
+	public void userJoin() {}
+	
+	@PostMapping("/join")
+	public String userjoin(User user) {
+		logger.info("유저가입 : {}", user);
 		
+		userService.insertUser(user);
+	
+		return "redirect: /";
 	}
 	
 	@GetMapping("/login")
-	public void login() {
-		
-	}
+	public void login() {}
 	
 	@PostMapping("/login")
 	public String userLogin(User user, HttpSession session) {
@@ -62,29 +68,6 @@ public class UserController {
 		}
 		
 	}
-
-	@RequestMapping("/mypage")
-	public  void mypage(@RequestParam(defaultValue = "0") int curPage, HttpSession session, Model model) {
-	
-		int userNo = (Integer) session.getAttribute("userNo");
-		User user = userService.getUserInfo(userNo);
-		
-		
-		Paging paging = userService.cntBoard(curPage, userNo);
-		logger.info("{}", paging);
-		
-		int totalCount = paging.getTotalCount();
-		
-		List<Board> board = userService.getBoardList(paging, userNo);	
-		
-		logger.info("user: {}", board);
-		UserFile userFile = userService.getUserImg(userNo);
-		
-		model.addAttribute("userfile", userFile);
-		model.addAttribute("totalCount", totalCount);
-		model.addAttribute("board", board);
-		model.addAttribute("paging", paging);
-	}
 	
 	@GetMapping("/userInfo")
 	public void userInfo(HttpSession session, Model model) {
@@ -92,8 +75,11 @@ public class UserController {
 		int userNo = (Integer) session.getAttribute("userNo");
 		User user = userService.getUserInfo(userNo);
 		
+		logger.info("가보자{}", user);
+		
 		UserFile userFile = userService.getUserImg(userNo);
 	
+		model.addAttribute("user", user);
 		model.addAttribute("userfile", userFile);
 	}
 	
@@ -103,9 +89,9 @@ public class UserController {
 		logger.info("유젖 정보 {}", user);
 		
 		int userNo = (Integer) session.getAttribute("userNo");
-		userService.insertProfile(userNo, file);
 		
-		
+		userService.insertProfile(user, file);
+	
 		return "redirect: ./mypage";
 	}
 	
@@ -113,7 +99,37 @@ public class UserController {
 	public String userLogout(HttpSession session) {
 		session.invalidate();
 		
-		return "main";
+		return "redirect: /";
 	}
+	
+	@RequestMapping("/mypage")
+	public  void mypage(@RequestParam(defaultValue = "0") int curPage, HttpSession session, Model model) {
+		
+		int userNo = (Integer) session.getAttribute("userNo");
+		User user = userService.getUserInfo(userNo);
+		
+		String userNick = user.getUserNick();
+		
+		Paging paging = userService.cntBoard(curPage, userNo);
+		logger.info("{}", paging);
+		
+		int totalCount = paging.getTotalCount();
+		int totalComCnt = userService.getCommCnt(userNo);
+				
+		List<Board> board = userService.getBoardList(paging, userNo);	
+		
+		logger.info("user: {}", board);
+		UserFile userFile = userService.getUserImg(userNo);
+		Date joindate = user.getUserJoindate();
+		
+		model.addAttribute("joindate", joindate);
+		model.addAttribute("commCnt", totalComCnt);
+		model.addAttribute("userNick", userNick);
+		model.addAttribute("userfile", userFile);
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("board", board);
+		model.addAttribute("paging", paging);
+	}
+	
 
 }

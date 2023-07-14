@@ -12,7 +12,7 @@ body{
 }
 
 #mybox{
-	width: 80%;
+	width:70%;
 	margin: auto;
 	margin-top: 60px;
 	margin-bottom: 60px;
@@ -21,9 +21,9 @@ body{
 }
 
 #mybox2{
-	width: 80%;
+	display: block;
+	width: 70%;
 	margin: auto;
-	margin-top: 60px;
 	border-top: 3px solid #B4B4DC;	
 	border-bottom: 3px solid #B4B4DC;	
 }
@@ -45,32 +45,80 @@ table {
   	color: black;
   }
   
-  #profile, #userInfo{
+  #profile{
   	float:left;
-  	padding-top: 20px;
-  	height: 150px;
+  	padding-top: 20px; 
+  	height: 100%;
   }
   
+  #userInfo {
+  	float:left;
+  	height: 100%;
+  	padding-top: 30px;
+  }
+  
+  
   #profileImg{
-  	max-width: 100px;
+	text-align: center;
+  	width: 100px;
+  	height: 100px;
   	margin-left: 50px;
   	margin-right: 50px;
-  	border-radius: 100%;
+  	border-radius: 100%; 
+  	object-fit: cover;
+  }
+  
+  #mybox3{
+   	float: left; 
+  	margin-left: 15%;
+  	width: 15%;
+  	padding-top: 10px;
+  	text-align: center;
+  	font-size: 18px;
+  	height: 40px;
+    border-top: 1px solid #bebebe;
+    border-left: 1px solid #bebebe;
+    border-right: 1px solid #bebebe;
+  }
+   #mybox4{
+    dislplay: inline-block; 
+  	float: left;
+  	width: 15%;
+  	padding-top: 10px;
+  	text-align: center;
+  	font-size: 18px;
+  	height: 40px;
+    border-top: 1px solid #bebebe;
+    border-left: 1px solid #bebebe;
+    border-right: 1px solid #bebebe;
   }
 </style>
 
 
 	<div id="mybox">
 		<div id="profile">
+			<c:choose>
+			<c:when test="${userfile.userfileStored eq null }">
+			<img id="profileImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
+			</c:when>
+			<c:otherwise>
 			<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
+			</c:otherwise>
+			</c:choose>
 		</div>
 		<div id="userInfo">
-		${userNick}<br>
-		<a href="./userInfo">내 정보 수정</a><br>
-		총 게시물 ${totalCount} 개<br>
+			<b style="font-size: 24px;">${userNick}</b>  &nbsp; &nbsp; <a href="./userInfo">  내 정보 수정</a><br>
+			총 게시물 ${totalCount} 개  &nbsp; |  &nbsp; 총 댓글 ${commCnt} 개<br>
+			<span style="font-size: 14px;">가입일 &nbsp; |  &nbsp; <fmt:formatDate value="${joindate }"
+ 							pattern="yyyy.MM.dd"/></span>
 		</div>
 	</div>
 	
+	<div >
+		<div id="mybox3"><a href="#">내가 쓴 글</a></div>
+		<div id="mybox4"><a href="#">내가 쓴 댓글</a></div>
+	</div>
+	<br><br>
 	<div id="mybox2">
 	<table>
 	<thead>
@@ -102,6 +150,9 @@ table {
 	</c:forEach>
 	</table>	
 </div>
+
+
+
 <div style="margin-bottom: 50px; margin-top: 50px;">
 		<!-- href로 링크만 넣어주면 됨 -->
 		<ul class="pagination justify-content-center">
@@ -110,12 +161,12 @@ table {
 			<!--1번이 아닐때 = ne  -->
 			<c:if test="${paging.curPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?filter=${filter}&searchType=${searchType}&keyword=${keyword}">
+					href="./mypage">
 						처음</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./mypage?filter=${filter}&searchType=${searchType}&keyword=${keyword}">
+					href="./mypage">
 						처음</a></li>
 			</c:if>
 
@@ -125,12 +176,12 @@ table {
 
 			<c:if test="${paging.startPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&laquo;</a></li>
+					href="./mypage?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.startPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./mypage?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&laquo;</a></li>
+					href="./mypage?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
 			</c:if>
 
 
@@ -138,7 +189,7 @@ table {
 			<%--이전 페이지로 이동 --%>
 			<c:if test="${paging.curPage gt 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?curPage=${paging.curPage -1 }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&lt;</a></li>
+					href="./mypage?curPage=${paging.curPage -1 }">&lt;</a></li>
 			</c:if>
 
 			<%--페이징 번호 리스트 --%>
@@ -146,12 +197,12 @@ table {
 				end="${paging.endPage }">
 				<c:if test="${paging.curPage eq i }">
 					<li class="page-item active"><a class="page-link"
-						href="./mypage?curPage=${i }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">${i }</a></li>
+						href="./mypage?curPage=${i }">${i }</a></li>
 				</c:if>
 
 				<c:if test="${paging.curPage ne i }">
 					<li class="page-item "><a class="page-link"
-						href="./mypage?curPage=${i }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">${i }</a></li>
+						href="./mypage?curPage=${i }">${i }</a></li>
 				</c:if>
 
 			</c:forEach>
@@ -159,29 +210,29 @@ table {
 			<%--다음 페이지로 이동 --%>
 			<c:if test="${paging.curPage lt paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?curPage=${paging.curPage +1 }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&gt;</a></li>
+					href="./mypage?curPage=${paging.curPage +1 }">&gt;</a></li>
 			</c:if>
 
 			<%--다음 페이징 리스트로 이동 --%>
 			<c:if test="${paging.endPage ne paging.totalPage}">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&raquo;</a></li>
+					href="./mypage?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.endPage eq paging.totalPage }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./mypage?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">&raquo;</a></li>
+					href="./mypage?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
 			</c:if>
 
 			<%--마지막 페이지로 이동 --%>
 			<c:if test="${paging.curPage ne paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./mypage?curPage=${paging.totalPage }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">마지막
+					href="./mypage?curPage=${paging.totalPage }">마지막
 				</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq paging.totalPage }">
 				<li class="page-item "><a class="page-link"
-					href="./mypage?curPage=${paging.totalPage }&filter=${filter}&searchType=${searchType}&keyword=${keyword}">
+					href="./mypage?curPage=${paging.totalPage }">
 						마지막 </a></li>
 			</c:if>
 		</ul>

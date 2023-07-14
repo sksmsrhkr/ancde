@@ -68,7 +68,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void insertProfile(int userNo, MultipartFile file) {
+	public void insertProfile(User user, MultipartFile file) {
+		
+		userDao.updateUser(user);
+		
 		if( file.getSize() <= 0 ) {
 			logger.info("파일의 크기가 0이다, 처리 중단!");
 			
@@ -111,11 +114,14 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		
+		int userNo = user.getUserNo();
+		userDao.deleteUserFile(userNo);
+		
 		UserFile userFile = new UserFile();
 		
 		userFile.setUserfileStored(storedName);
-		userFile.setUserNo(userNo);
-		
+		userFile.setUserNo(user.getUserNo());
+				
 		userDao.insertUserFile(userFile);
 		
 	}
@@ -123,6 +129,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserFile getUserImg(int userNo) {
 		return userDao.getUserProfile(userNo);
+	}
+	
+	@Override
+	public void insertUser(User user) {
+		userDao.joinUser(user);
+	}
+
+	@Override
+	public int getCommCnt(int userNo) {
+		return userDao.getCommCnt(userNo);
 	}
 	
 }

@@ -21,8 +21,12 @@ public interface UserService {
 
 	public List<Board> getBoardList(Paging paging, int userNo);
 
-	public void insertProfile(int userNo, MultipartFile file);
+	public void insertProfile(User user, MultipartFile file);
 
 	public UserFile getUserImg(int userNo);
+
+	public void insertUser(User user);
+
+	public int getCommCnt(int userNo);
 
 }

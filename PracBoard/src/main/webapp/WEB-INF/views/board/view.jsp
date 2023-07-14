@@ -127,10 +127,12 @@
 	}
 	
 	#profileImg{
-		max-width: 60px;
+		width: 80px;
+		height: 80px;
 		border-radius: 100%;
 		float: left;
 		margin-right: 10px;
+		object-fit: cover;
 	}
 	
 </style>
@@ -521,23 +523,23 @@ function replyBtn(th) {
 	<h3 style="font-family: 'SBAggroM'; text-align: center; ">${board.title}</h3>
 	<br>
 	<!-- 작성자, 글 정보 -->
-	<div>
 		<div id="profile">
 			<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
 		</div>
+	<div style="height: 80px; padding-top: 20px; ">
 <!-- 			<h6><i class="bi bi-person-circle"></i>&nbsp;&nbsp;</h6> -->
 			<h5>${writerNick}</h5>
 			<span style="font-size: 13px;"><fmt:formatDate value="${board.writeDate}" pattern="yy/MM/dd HH:mm:SS"/></span>
 		
-		<div class="numbers" style="float:right">
+		<div class="numbers" style="float:right; margin-bottom: -20px;">
 			<span>조회수 ${board.hit}</span>
 			댓글수<span class="chkCommentCnt"> ${cntComment}</span>
 			추천수<span id="chkRecommCnt"> ${cntRecommend}</span>
 			<span style="margin-top: 50px;"><i class="bi bi-three-dots-vertical" class="modal"></i></span>
 	
 		</div>
-		
 	</div>
+	
 	<!-- 작성자, 글 정보 -->
 	<hr>
 	<!-- 글 내용 -->

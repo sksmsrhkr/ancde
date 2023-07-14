@@ -25,4 +25,12 @@ public interface UserDao {
 
 	public User getUser(int userNo);
 
+	public void joinUser(User user);
+
+	public void updateUser(User user);
+
+	public void deleteUserFile(int userNo);
+
+	public int getCommCnt(int userNo);
+
 }
