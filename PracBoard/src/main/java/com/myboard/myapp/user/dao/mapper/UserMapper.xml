@@ -18,7 +18,9 @@
   </select>
   
   <select id="getUser" parameterType="int" resultType="User">
-  	SELECT * FROM user_tb WHERE user_no = #{userNo}
+  	SELECT user_no, user_name, user_id, user_nick, user_gender, user_email, user_postcode, 
+  	user_addr1, user_addr2, user_addr3, user_phone, user_joindate, user_birth
+  	FROM user_tb WHERE user_no = #{userNo}
   </select>
 
 	<select id="getCntBoard" parameterType="int" resultType="int">
@@ -101,4 +103,26 @@
   	<select id="getCommCnt" parameterType="int" resultType="int">
   		SELECT count(*) FROM board_comment WHERE user_no = #{userNo}
   	</select>
+  	
+  	<select id="getCommentCnt" parameterType="int" resultType="int">
+  		SELECT count(*) FROM board_comment WHERE user_no = #{userNo}
+  	</select>
+  	
+  	<select id="getCommentList" parameterType="Map" resultType="Map">
+  		SELECT * FROM (
+		SELECT  rownum rnum , C.* FROM
+		(
+		SELECT bc.* , b.title
+		FROM (SELECT * FROM board_comment WHERE user_no = #{userNo} order by comment_no DESC) bc
+		LEFT JOIN board b on 
+		b.board_no = bc.board_no
+		) C
+		ORDER BY rnum
+		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<delete id="deletePro" parameterType="int">
+  		DELETE FROM userfile WHERE userfile_no = #{userfileNo}
+  	</delete>
+  	
   </mapper>

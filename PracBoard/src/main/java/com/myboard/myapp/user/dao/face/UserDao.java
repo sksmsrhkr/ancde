@@ -1,6 +1,7 @@
 package com.myboard.myapp.user.dao.face;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -32,5 +33,11 @@ public interface UserDao {
 	public void deleteUserFile(int userNo);
 
 	public int getCommCnt(int userNo);
+
+	public int getCommentCnt(int userNo);
+
+	public List<Map<Object, String>> getCommentList(@Param("paging") Paging paging, @Param("userNo") int userNo);
+
+	public void deletePro(int userfileNo);
 
 }

@@ -52,8 +52,10 @@ form{
 	text-align: center;
   	width: 150px;
   	height: 150px;
-  	margin-left: 50px;
-  	margin-right: 50px;
+  	float: left;
+   	margin-left: 50px; 
+   	margin-top: 20px; 
+   	margin-right: 50px; 
   	border-radius: 100%;
   	object-fit: cover;
   }
@@ -73,7 +75,8 @@ form{
   }
   
   #profileBox{
-   text-align: center;
+/*   	display: inline-block; */
+   	text-align: center;
   	height: 200px;
   	width: 30%;
   	margin: auto;
@@ -84,22 +87,54 @@ form{
   #address{
    margin-bottom: 10px;
   }
+  
+  #delImg{
+  display: block;
+  padding-top: 5px;
+  margin-bottom: 5px;
+  padding-top: 10%;
+   padding-left: 70%;
+   width: 20px;
+   position: absolute;
+  }
+  
+  #realImgBox{
+  	width: 50%;
+  	float: left;
+  	height: 100%;
+  	position: relative;
+  }
+  
+  #changeBtn{
+  	height: 100%;
+  	width: 40%;
+  	padding-top:90px;
+  	margin-right:10%;
+  	display: inline-block;
+  	float: right;
+  }
 </style>
 
 <form action="./userInfo" method="post" enctype="multipart/form-data">
-	
+	<div>
 	<div id="profileBox">
 			<c:choose>
 				<c:when test="${userfile.userfileStored eq null }">
+				<div id="realImgBox">
 					<img id="profileImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
+				</div>
 				</c:when>
 				<c:otherwise>
+					<div id="realImgBox">
 					<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
+					<div id="delImg"><span onclick="deleteImg()" data-commNo="${userfile.userfileNo}" ><i class="bi bi-x-circle-fill" ></i></span></div>
+					</div>
 				</c:otherwise>
 			</c:choose>
-		<label for="file" style="font-size: 15px; margin-top: 90px;" >사진 변경</label>
+		<div id="changeBtn"><label for="file" style="font-size: 15px;" >사진 변경</label></div>
 		<input type="file" name="file" id="file" accept="image/*" style="display: none;" onchange="setThumbnail(event);">
 	</div>	
+	</div>
 	
 	<br><br><br>
 	
@@ -111,7 +146,7 @@ form{
 	<input type="text"id="name" name="userName" value="${user.userName }"><br>
 	
 	<label for ="pw">현재 비밀 번호</label>
-	<input type="text" id="pw" ><br>
+	<input type="text" id="pw" name="userPw" ><br>
 
 	<label for ="pw">새 비밀 번호</label>
 	<input type="text" id="pw"><br>
@@ -134,8 +169,8 @@ form{
 	<label><b>생년월일/성별</b></label> 
 	<span>
 	<fmt:parseDate var="dt" value="${user.userBirth}" pattern="yyyyMMdd" /> 
-	<input value="<fmt:formatDate value="${dt}" pattern="yyyy.MM.dd" />" style="width: 20%; border:none; outline: none;" readonly>
-	/
+	<input value="<fmt:formatDate value="${dt}" pattern="yyyy.MM.dd" />" style="width: 21%; border:none; outline: none;" readonly>
+	/ &nbsp;
 	<c:if test="${user.userGender eq 'F' }">
 		 <input value="여자" style="width: 25%; border:none; outline: none;" readonly>
 	</c:if>
@@ -160,8 +195,8 @@ form{
 
     <script>
       function setThumbnail(event) {
+        console.log("프로필 추가입니당")
         var reader = new FileReader();
-
         reader.onload = function(event) {
           var img = document.getElementById("profileImg");
           img.setAttribute("src", event.target.result);
@@ -170,7 +205,33 @@ form{
 
         reader.readAsDataURL(event.target.files[0]);
       }
-    </script>
+      </script> 
+      
+	<script type="text/javascript">
+	      function deleteImg() {
+			console.log("프로필 삭제입니당")
+			console.log(${userfile.userfileNo})
+			
+			$.ajax({
+				type : 'post',
+				url : '/user/deleteImg',
+				dataType : 'html',
+				data : {'userfileNo' : ${userfile.userfileNo}, 
+						'userNo' : ${userNo}},
+				
+						success : function(data) {
+							console.log("성공");
+							console.log(data);
+							$("#profileBox").html(data)
+						}
+						,error: function (request, status, error) {
+					        console.log("error");
+					    }	
+			})
+			
+		}
+	  
+	</script>
 
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

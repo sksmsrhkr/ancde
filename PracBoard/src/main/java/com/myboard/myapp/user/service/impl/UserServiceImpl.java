@@ -3,6 +3,7 @@ package com.myboard.myapp.user.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.user.dao.face.UserDao;
@@ -140,5 +142,30 @@ public class UserServiceImpl implements UserService {
 	public int getCommCnt(int userNo) {
 		return userDao.getCommCnt(userNo);
 	}
+
+	@Override
+	public Paging cntComment(int curPage, int userNo) {
+
+		int totalCount = userDao.getCommentCnt(userNo);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
 	
+	@Override
+	public List<Map<Object, String>> getCommList(Paging paging, int userNo) {
+
+		return userDao.getCommentList(paging, userNo);
+	}
+	
+	@Override
+	public int getBoardCnt(int userNo) {
+		return  userDao.getCntBoard(userNo);
+	}
+	
+	@Override
+	public void deleteProfie(int userfileNo) {
+		userDao.deletePro(userfileNo);
+	}
 }
