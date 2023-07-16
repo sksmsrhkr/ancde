@@ -61,6 +61,10 @@ public interface BoardDao {
 
 	public void deleteBoard(int boardNo);
 
+	public int isParent(BoardComment boardComment);
+
+	public void upDeleteComment(BoardComment boardComment);
+
 	
 
 

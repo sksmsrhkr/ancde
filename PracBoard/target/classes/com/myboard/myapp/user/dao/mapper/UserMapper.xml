@@ -23,25 +23,6 @@
   	FROM user_tb WHERE user_no = #{userNo}
   </select>
 
-	<select id="getCntBoard" parameterType="int" resultType="int">
-		SELECT count(*) FROM board WHERE user_no = #{userNo}
-	</select>
-	
-	<select id="getBoardList" parameterType="Map" resultType="Map">
-		SELECT * FROM
-    	(select rownum rnum, b.*
-        FROM(
-        SELECT title, board_no, write_date, hit
-        ,(SELECT count(*) FROM  board_comment bc WHERE bc.board_no = b.board_no
-        ) commentCnt
-        FROM board b
-        WHERE user_no = #{userNo}
-        order by board_no DESC
-        ) b
-        order by rnum
-        )WHERE rnum BETWEEN #{paging.startNo} and #{paging.endNo}
-	</select>
-	
 	<insert id="insertUserFile" parameterType="UserFile">
 		INSERT INTO userfile 
 		(user_no,
@@ -99,27 +80,6 @@
   	<delete id="deleteUserFile" parameterType="int">
   		DELETE FROM userfile WHERE user_no = #{userNo}
   	</delete>
-  	
-  	<select id="getCommCnt" parameterType="int" resultType="int">
-  		SELECT count(*) FROM board_comment WHERE user_no = #{userNo}
-  	</select>
-  	
-  	<select id="getCommentCnt" parameterType="int" resultType="int">
-  		SELECT count(*) FROM board_comment WHERE user_no = #{userNo}
-  	</select>
-  	
-  	<select id="getCommentList" parameterType="Map" resultType="Map">
-  		SELECT * FROM (
-		SELECT  rownum rnum , C.* FROM
-		(
-		SELECT bc.* , b.title
-		FROM (SELECT * FROM board_comment WHERE user_no = #{userNo} order by comment_no DESC) bc
-		LEFT JOIN board b on 
-		b.board_no = bc.board_no
-		) C
-		ORDER BY rnum
-		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
-  	</select>
   	
   	<delete id="deletePro" parameterType="int">
   		DELETE FROM userfile WHERE userfile_no = #{userfileNo}

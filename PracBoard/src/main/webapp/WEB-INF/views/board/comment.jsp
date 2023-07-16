@@ -15,7 +15,7 @@ $(function() {
 	$(".replyComm").hide()
 })
 </script>
-			<c:forEach var="commList" items="${commentList}">
+				<c:forEach var="commList" items="${commentList}">
 	
 				<c:choose>
 				<%-- !!!!!!!!!!! 내가 못 보는 비댓 !!!!!!!!!!!!!! --%>
@@ -34,11 +34,15 @@ $(function() {
 						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
 				</c:when>
 				
+				<c:when test="${commList.IS_DELETE eq 'y'}">
+					<sapn>삭제된 댓글 입니다.</sapn>
+				</c:when>
+				
 				<%--비댓 아님 --%>
 					
 					<c:otherwise>
 					<div class="upBox">
-					<div style="float: right;">
+					<div style="float: right;" id="${commList.COMMENT_NO}">
 						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
 						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  data-replyNo="${commList.USER_NO}" >답글</span>	
 					<c:if test="${commList.USER_NO eq userNo}">					
@@ -137,7 +141,7 @@ $(function() {
 							
 								<div  style="float:left;">
 									<label for="updatefile" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
-									<input type="file" id="updatefile" name='updatefile'  accept="image/*" style="display: none;">
+									<input type="file" id="updatefile" name='updatefile'  accept="image/*" style="display: none;" onchange="setThumbnail(event);">
 								</div>
 								
 								<div style="float:right;"  >

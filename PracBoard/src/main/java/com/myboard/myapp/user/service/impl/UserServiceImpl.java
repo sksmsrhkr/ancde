@@ -2,8 +2,6 @@ package com.myboard.myapp.user.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -14,13 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.myboard.myapp.dto.Board;
-import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.user.dao.face.UserDao;
 import com.myboard.myapp.user.service.face.UserService;
-import com.myboard.myapp.util.Paging;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,23 +45,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserInfo(int userNo) {
 		return userDao.getUser(userNo);
-	}
-	
-	@Override
-	public Paging cntBoard(int curPage, int userNo) {
-
-		int totalCount = userDao.getCntBoard(userNo);
-		
-		logger.info("왜 안돼!!!!!!!!!!{}", totalCount);
-		
-		Paging paging = new Paging(totalCount,curPage);
-		
-		return paging;
-	}
-	
-	@Override
-	public List<Board> getBoardList(Paging paging, int userNo) {
-		return userDao.getBoardList(paging, userNo);
 	}
 
 	@Override
@@ -138,32 +116,6 @@ public class UserServiceImpl implements UserService {
 		userDao.joinUser(user);
 	}
 
-	@Override
-	public int getCommCnt(int userNo) {
-		return userDao.getCommCnt(userNo);
-	}
-
-	@Override
-	public Paging cntComment(int curPage, int userNo) {
-
-		int totalCount = userDao.getCommentCnt(userNo);
-		
-		Paging paging = new Paging(totalCount, curPage);
-		
-		return paging;
-	}
-	
-	@Override
-	public List<Map<Object, String>> getCommList(Paging paging, int userNo) {
-
-		return userDao.getCommentList(paging, userNo);
-	}
-	
-	@Override
-	public int getBoardCnt(int userNo) {
-		return  userDao.getCntBoard(userNo);
-	}
-	
 	@Override
 	public void deleteProfie(int userfileNo) {
 		userDao.deletePro(userfileNo);

@@ -53,6 +53,10 @@ public interface BoardService {
 
 	public void deleteBoard(int boardNo);
 
+	public int isParentNo(BoardComment boardComment);
+
+	public void upDeleteComm(BoardComment boardComment);
+
 	
 
 

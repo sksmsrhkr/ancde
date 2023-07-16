@@ -18,6 +18,7 @@
 			<exclude-mapping path="/user/join" />
 			<exclude-mapping path="/user/login" />
 			<exclude-mapping path="/board/list" />
+			<exclude-mapping path="/admin/login" />
 			<beans:bean class="com.myboard.myapp.interceptor.Interceptor"/>
 		</interceptor>
 	</interceptors>

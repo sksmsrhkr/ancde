@@ -5,15 +5,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:import url="/WEB-INF/views/layout/header.jsp" />
-<%-- <c:import url="/WEB-INF/views/layout/sidebar.jsp" /> --%>
 
 <style>
 
 	.box1{
-		width: 70%;  
-		margin-right: 15%;
-		margin-left: 15%;
-    	margin-top: 70px;
+		width: 70%;
+    	margin-top: 60px;
+    	margin-left: 15%;
 	}
 	
   table {   
@@ -74,6 +72,7 @@ function openComm(url, name){
 
 <body>
 
+<div id="container">
 <div class="box1">
 <table>
 	<thead>
@@ -86,6 +85,7 @@ function openComm(url, name){
 			<th>조회</th>
 		</tr>
 	</thead>
+	
 <c:forEach var="list" items="${list }">
 		<tr>
 			<td>${list.BOARD_NO}</td>
@@ -112,6 +112,7 @@ function openComm(url, name){
 </c:forEach>
 </table>
 
+	<div>
 	<c:if test="${not empty login and login}">
 		<div style="float: right;">
 		<a href="./write"><button id="btnWrite"
@@ -124,9 +125,10 @@ function openComm(url, name){
 		<br>
 		<br>
 	</c:if>
+	</div>
 </div>
 
-<div style="margin-bottom: 100px; margin-top: 50px;">
+<div style="margin-bottom: 100px; margin-top:30px;">
 		<!-- href로 링크만 넣어주면 됨 -->
 		<ul class="pagination justify-content-center">
 
@@ -212,4 +214,5 @@ function openComm(url, name){
 
 	</div>
 
+</div>
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

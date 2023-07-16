@@ -212,22 +212,31 @@ form{
 			console.log("프로필 삭제입니당")
 			console.log(${userfile.userfileNo})
 			
-			$.ajax({
-				type : 'post',
-				url : '/user/deleteImg',
-				dataType : 'html',
-				data : {'userfileNo' : ${userfile.userfileNo}, 
-						'userNo' : ${userNo}},
-				
-						success : function(data) {
-							console.log("성공");
-							console.log(data);
-							$("#profileBox").html(data)
-						}
-						,error: function (request, status, error) {
-					        console.log("error");
-					    }	
-			})
+			if(confirm('게시글을 저장하시겠습니까?') == true){
+				console.log("ok")
+					
+				$.ajax({
+					type : 'post',
+					url : '/user/deleteImg',
+					dataType : 'html',
+					data : {'userfileNo' : ${userfile.userfileNo}, 
+							'userNo' : ${userNo}},
+					
+							success : function(data) {
+								console.log("성공");
+								console.log(data);
+								$("#profileBox").html(data)
+							}
+							,error: function (request, status, error) {
+						        console.log("error");
+						    }	
+				})
+					
+			} else{
+				return;
+			}
+			
+			
 			
 		}
 	  

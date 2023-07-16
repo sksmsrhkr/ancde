@@ -320,5 +320,21 @@ public class BoardServiceImpl implements BoardService{
 	public void deleteBoard(int boardNo) {
 		boardDao.deleteBoard(boardNo);
 	}
+
+	@Override
+	public int isParentNo(BoardComment boardComment) {
+		
+		int abc = boardDao.isParent(boardComment);
+		
+		return boardDao.isParent(boardComment);
+	}
+	
+	@Override
+	public void upDeleteComm(BoardComment boardComment) {
+		
+		boardDao.upDeleteComment(boardComment);
+		int commentNo = boardComment.getCommentNo();
+		boardDao.deleteImgFile(commentNo);
+	}
 	
 }

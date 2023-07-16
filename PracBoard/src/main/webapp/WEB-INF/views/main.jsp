@@ -19,10 +19,18 @@ body{
 		<a href="/board/list">자유 게시판</a>
 	</c:if>
 	<c:if test="${not empty userNo }">
-		<a href="/user/logout">로그아웃</a>
-		<a href="/board/list">자유 게시판</a>
-		<a href="/user/mypage">마이페이지</a>
-	</c:if>
+	<c:import url="/WEB-INF/views/layout/sidebar.jsp" />
+	</c:if>	
+</div>
+
+<div>
+인기글
+</div>
+<div>
+최신글
+</div>
+<div>
+공지사항
 </div>
 
 </body>

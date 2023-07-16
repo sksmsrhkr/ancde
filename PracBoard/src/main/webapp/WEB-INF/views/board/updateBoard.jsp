@@ -38,7 +38,7 @@ $(function() {
 		if(confirm('게시글을 수정하시겠습니까?') == true){
 			console.log("ok")
 		} else{
-			return;
+			return false;
 		}
 
 	console.log($("#content").val())

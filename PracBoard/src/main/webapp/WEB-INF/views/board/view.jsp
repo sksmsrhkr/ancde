@@ -12,7 +12,6 @@
 	body{font-family: 'SBAggroL'}
 	
 	.container {
-		width: 70%;
 		margin-top: 50px;
 		font-family: 'SBAggroL';
 	}
@@ -23,7 +22,7 @@
 	}
 	
 	#box{
-		width: 100%;
+		width: 70%;
 		height: 30px;
 	}
 	
@@ -518,13 +517,51 @@ function replyBtn(th) {
 
 
 </script>
+
+    <script>
+      function setThumbnail(event) {
+    	  
+    	 console.log("클릭")
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+          var img = document.getElementById("commfile");
+          img.setAttribute("src", event.target.result);
+//           document.querySelector("div#image_container").appendChild(img);
+        };
+
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    </script>
+
+ 	<script> 
+	$(function() {
+	
+ 	$("#upNdel").on("click","#deleteBoard", function(){
+ 		console.log("click")
+ 		if(confirm('게시글을 삭제하시겠습니까?') == true){
+ 			console.log("ok")
+ 		} else{
+ 			console.log("return")
+ 			return false;
+		}
+ 	})
+ 	})
+ 	</script> 
 	
 <div class="container">
 	<h3 style="font-family: 'SBAggroM'; text-align: center; ">${board.title}</h3>
 	<br>
 	<!-- 작성자, 글 정보 -->
 		<div id="profile">
-			<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
+			<c:choose>
+			<c:when test="${writerfile.userfileStored eq null }">
+			<img id="profileImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
+			</c:when>
+			<c:otherwise>
+			<img id="profileImg" src="/upload/${writerfile.userfileStored }"  alt="">
+			</c:otherwise>
+			</c:choose>
 		</div>
 	<div style="height: 80px; padding-top: 20px; ">
 <!-- 			<h6><i class="bi bi-person-circle"></i>&nbsp;&nbsp;</h6> -->
@@ -584,7 +621,11 @@ function replyBtn(th) {
 							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
 						</c:if>
 						<br>
-						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
+						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영자만 볼 수 있는 댓글입니다.</sapn>
+				</c:when>
+				
+				<c:when test="${commList.IS_DELETE eq 'y'}">
+					<sapn>삭제된 댓글 입니다.</sapn>
 				</c:when>
 				
 				<%--비댓 아님 --%>
@@ -739,16 +780,13 @@ function replyBtn(th) {
 				</div>
 			</form>
 	<!-- 댓글 끝 -->	
-	<div style="float:right; margin-top: 30px;">
+	<div style="float:right; margin-top: 30px;" id="upNdel">
 	<c:if test="${board.userNo eq userNo }" >
 		<a href="./updateBoard?boardNo=${board.boardNo}"><button id="updateBoard">수정</button></a>
 		<a href="./deleteBoard?boardNo=${board.boardNo}"><button id="deleteBoard">삭제</button></a>
 	</c:if>
 	</div>
 	</div>
-
-
-	
 	
 	<div style="margin-top: 10px;">
 	<a href="./list">전체목록</a>
@@ -781,24 +819,6 @@ function replyBtn(th) {
 	<div style="float:right;">
 	<a href="#">TOP</a>
 	</div>
+
 </div>
-
-    <script>
-      function setThumbnail(event) {
-    	  
-    	 console.log("클릭")
-        var reader = new FileReader();
-
-        reader.onload = function(event) {
-          var img = document.getElementById("commfile");
-          img.setAttribute("src", event.target.result);
-//           document.querySelector("div#image_container").appendChild(img);
-        };
-
-        reader.readAsDataURL(event.target.files[0]);
-      }
-    </script>
-
-
-
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

@@ -168,4 +168,17 @@
   		DELETE FROM board WHERE board_no = #{boardNo}
   	</delete>
   	
+  	<select id="isParent" parameterType="BoardComment" resultType="int">
+  		SELECT count(*) FROM board_comment WHERE parent_no = #{commentNo}
+  	</select>
+  	
+  	<update id="upDeleteComment" parameterType="BoardComment">
+  		 <selectKey order="BEFORE" resultType="int"
+			keyProperty="userNo">
+			SELECT user_no FROM board_comment WHERE comment_no = #{commentNo}
+		</selectKey>
+  		UPDATE board_comment SET comm_content = null, is_delete = 'y', comm_date = null,
+  		board_no = #{boardNo}, user_no = #{userNo}, chk_lock = 'n' WHERE comment_no = #{commentNo}
+  	</update>
+  	
   </mapper>

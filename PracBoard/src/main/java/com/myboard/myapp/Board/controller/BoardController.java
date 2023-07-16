@@ -70,6 +70,7 @@ public class BoardController {
 		//작성자 정보
 		User user = boardService.getUserInfo(board.getUserNo());
 		String writerNick = user.getUserNick();
+		UserFile writerFile = userService.getUserImg(board.getUserNo());
 		
 		
 		//좋아요
@@ -83,6 +84,7 @@ public class BoardController {
 		logger.info("commentList : {}", commentList);
 		UserFile userFile = userService.getUserImg(userNo);
 		
+		model.addAttribute("writerfile", writerFile);
 		model.addAttribute("userfile", userFile);
 		model.addAttribute("board", board);
 		model.addAttribute("boardNo", boardNo);
@@ -186,10 +188,22 @@ public class BoardController {
 		int boardNo = boardComment.getBoardNo();
 		logger.info("ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ{}",boardNo);
 		
+		int isParent = boardService.isParentNo(boardComment);
+		logger.info("이게 뭐냐{}", isParent);
+		
+		
+		if( isParent > 0 ) {
+			boardService.upDeleteComm(boardComment);
+			logger.info("대댓 달린 부모 댓글!!");
+		} else if(isParent == 0) {
 		boardService.deleteComm(boardComment);
+			logger.info("부모 댓글!! 아님돠");
+		}
 		
 		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		Board board = boardService.getBoard(boardNo);
 		
+		mav.addObject("board", board);
 		mav.addObject("boardNo", boardNo);
 		mav.addObject("commentList", commentList);
 		mav.setViewName("/board/comment");
@@ -241,7 +255,9 @@ public class BoardController {
 		
 		CommentFile commentFile = boardService.getCommImg(boardComment.getCommentNo());
 		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		Board board = boardService.getBoard(boardComment.getBoardNo());
 		
+		mav.addObject("board", board);
 		mav.addObject("commentList", commentList);
 		mav.setViewName("/board/comment");
 		
@@ -259,8 +275,10 @@ public class BoardController {
 		boardService.deleteImgFile(commentNo);
 		
 		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
+		Board board = boardService.getBoard(boardNo);
 		
 		logger.info("뭘까여{}", commentList);
+		model.addAttribute("board", board);
 		model.addAttribute("commentList", commentList);
 		
 	}
@@ -273,7 +291,9 @@ public class BoardController {
 		
 		
 		List<Map<String, Object>> commentList = boardService.getComment(boardComment.getBoardNo());
+		Board board = boardService.getBoard(boardComment.getBoardNo());
 		
+		mav.addObject("board", board);
 		mav.addObject("commentList", commentList);
 		mav.setViewName("/board/comment");
 		

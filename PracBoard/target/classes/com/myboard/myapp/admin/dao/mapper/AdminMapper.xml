@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper
+  	namespace="com.myboard.myapp.admin.dao.face.AdminDao">
+  	
+  	<select id="cntAdminByIdPw" parameterType="Admin" resultType="int">
+  		SELECT count(*) FROM admin_tb WHERE admin_id = #{adminId} AND admin_pw = #{adminPw}
+  	</select>
+  	
+  </mapper>
