@@ -61,6 +61,10 @@
 		margin-right: 5px;
 	}
   
+  #search{
+  	width: 20%;
+  	margin: 0% 40% 0% 45%;
+  }
 </style>
 
 <script type="text/javascript">
@@ -212,7 +216,16 @@ function openComm(url, name){
 			</c:if>
 		</ul>
 
-	</div>
+</div>
 
+	<div id="search">
+    <select name="searchType">
+    <option value="title">제목</option>
+    <option value="content">내용</option>
+    <option value="user_nick">닉네임</option>
+    <option value="title">제목+내용</option>
+    </select>
+    <input type="text" name="keyword"><button type="submit" id="searchBtn">검색</button>
+	</div>
 </div>
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

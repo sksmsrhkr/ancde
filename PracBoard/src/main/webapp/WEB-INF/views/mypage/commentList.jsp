@@ -107,7 +107,7 @@ table {
 			</c:choose>
 		</div>
 		<div id="userInfo">
-			<b style="font-size: 24px;">${userNick}</b>  &nbsp; &nbsp; <a href="./userInfo">  내 정보 수정</a><br>
+			<b style="font-size: 24px;">${userNick}</b>  &nbsp; &nbsp; <a href="/user/userInfo">  내 정보 수정</a><br>
 			총 게시물 ${totalCount} 개  &nbsp; |  &nbsp; 총 댓글 ${commCnt} 개<br>
 			<span style="font-size: 14px;">가입일 &nbsp; |  &nbsp; <fmt:formatDate value="${joindate }"
  							pattern="yyyy.MM.dd"/></span>

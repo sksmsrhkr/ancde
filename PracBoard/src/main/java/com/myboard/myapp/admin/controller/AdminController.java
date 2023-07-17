@@ -36,7 +36,7 @@ public class AdminController {
 		if(isLogin == true) {
 			session.setAttribute("adminLogin", isLogin);
 			
-			return "redirect: ./manage";
+			return "redirect: ./main";
 		
 		} else {
 			return "redirect: /admin/login";
@@ -44,7 +44,7 @@ public class AdminController {
 		
 	}
 	
-	@RequestMapping("/manage")
+	@RequestMapping("/main")
 	public void managePage() {
 		
 	}

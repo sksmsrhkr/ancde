@@ -41,7 +41,10 @@ public class BoardController {
 	@Autowired UserService userService;
 	
 	@RequestMapping("/list")
-	public void BoardList(@RequestParam(defaultValue = "0") int curPage, Model model ) {
+	public void BoardList(@RequestParam(defaultValue = "0") int curPage, 
+			@RequestParam(value = "searchType",required = false, defaultValue = "title") String searchType,
+			@RequestParam(value = "keyword",required = false, defaultValue = "") String keyword,
+			Model model) {
 		
 		Paging paging = boardService.getTotalPage(curPage);
 		

@@ -13,10 +13,10 @@ body{
 
 #slider{
 	margin-top: -60px;
-	width: 18%;
+	width: 15%;
 	height: 1250px;
-	background-color: #E0EBFF;
-	padding-top: 50px;
+	background-color: #8AB78A;
+	padding-top: 120px;
 	padding-left: 50px;
 	padding-right: 50px;
 	float: left;	
@@ -37,6 +37,16 @@ body{
 
   }
 
+
+ a{
+  	color: white;
+  	text-decoration: none;
+  }
+  
+ a:hover {
+ 	color:black;
+ }
+ 
   #side2{
   	text-align: center;  	
   	margin-top: 50px;
@@ -45,24 +55,21 @@ body{
 
 <div id="slider">
 	<div id="side">
+	<c:if test="${not empty userNo  }">
 	<c:choose>
 	<c:when test="${userfile.userfileStored eq null }">
 	<img id="sideImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
 	</c:when>
 	<c:otherwise>
-	<img id="sideImg" src="/upload/${userfile.userfileStored }"  alt="">
+	<a href="/mypage/myboardList"><img id="sideImg" src="/upload/${userfile.userfileStored }"  alt=""></a>
 	</c:otherwise>
 	</c:choose>
 	<br><br>
-	<b style="font-size: 24px; text-align: center;">${userNick} &nbsp; 님</b><br>
-	<span style="font-size: 15px;"><a href="/user/logout">로그아웃</a></span>
+	<b style="font-size: 24px; text-align: center; color: #E6FFE6;">${user.userNick} &nbsp; 님<br>환영합니다!</b><br>
+	</c:if>
 	</div>	
-
 	<div id="side2">
-	<h4><a href="/" style="color: black;">홈</a></h4>
-	<h4><a href="/mypage/myboardList" style="color: black;">마이 페이지</a></h4>
-	<h4><a href="/board/list" style="color: black;">자유 게시판</a></h4>
-	
+		<h4><a href="/board/list" >자유 게시판</a></h4>
 	</div>
 
 	

@@ -53,7 +53,7 @@ public class UserController {
 			
 			logger.info("user: {}", userInfo);
 			
-			session.setAttribute("login", isLogin);
+			session.setAttribute("login", true);
 			session.setAttribute("userNo", userInfo.getUserNo());
 			session.setAttribute("userNick", userInfo.getUserNick());
 			
@@ -86,10 +86,10 @@ public class UserController {
 		logger.info("유젖 정보 {}", user);
 		
 		int userNo = (Integer) session.getAttribute("userNo");
-		
+
 		userService.insertProfile(user, file);
 	
-		return "redirect: ./mypage";
+		return "redirect: /mypage/myboardList";
 	}
 	
 	@RequestMapping("/logout")

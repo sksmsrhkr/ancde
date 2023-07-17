@@ -17,7 +17,7 @@ label {
 	text-align:left;
 	width:30%;
 	font-weight:bold;
-	margin-bottom: 20px;
+/*  	margin-bottom: 20px;  */
 }
 
 #userform{
@@ -35,6 +35,13 @@ label {
 
 input{
 	width: 50%;
+}
+
+p {
+	width: 50%;
+	margin-left: 40%;
+	font-size: 14px;
+	color: red;
 }
 
 form{
@@ -115,7 +122,99 @@ form{
   }
 </style>
 
-<form action="./userInfo" method="post" enctype="multipart/form-data">
+	<script type="text/javascript">
+	
+		function checkForm() {
+			
+			console.log("유효성 검사")
+			console.log($("#id").val())
+			console.log( document.getElementById("id").value )
+			console.log( changeForm.userId.value )
+			console.log($("#newPw").val())
+			
+			
+			if( $("#name").val() == ""){
+				changeForm.userName.focus();
+				$("#msg_name").html("이름을를 입력해주세요"); 
+				return;
+			} else{
+				$("#msg_name").html(""); 
+			}
+			
+			
+			if( $("#pw").val() == ""){
+				changeForm.originPw.focus();
+				$("#msg_pw").html("비밀번호를 입력해주세요"); 
+				return;
+						
+			} else if ( $("#pw").val() != $("#realPw").val() ){
+				changeForm.originPw.focus();
+				$("#msg_pw").html("비밀번호가 일치하지 않습니다"); 
+				return;	
+			} else {
+				$("#msg_pw").html(""); 
+			}
+			
+			
+			
+			if( $("#newPw").val() == ""){
+				changeForm.newPw.focus();
+				$("#msg_newpw").html("새비밀번호를 입력해주세요"); 
+				return;
+			} else{
+				$("#msg_newpw").html(""); 
+			}
+			
+			
+			
+			if( $("#newPwChk").val() == ""){
+				changeForm.newPwChk.focus();
+				$("#msg_chkpw").html("새비밀번호를 확인해주세요"); 
+				return;
+				
+			} else if( $("#newPw").val() != $("#newPwChk").val() ){
+				changeForm.newPwChk.focus();
+				$("#msg_chkpw").html("비밀번호가 일치하지 않습니다"); 
+				return;	
+			}	else{
+				$("#msg_chkpw").html(""); 
+			}
+			
+			
+			
+			if( $("#nick").val() == ""){
+				changeForm.userNick.focus();
+				$("#msg_nick").html("닉네임을 입력해주세요"); 
+				return;
+			} else{
+				$("#msg_nick").html(""); 
+			}
+			
+			
+			if( $("#email").val() == ""){
+				changeForm.userEmail.focus();
+				$("#msg_email").html("이메일 입력해주세요"); 
+				return;
+			} else{
+				$("#msg_email").html(""); 
+			}
+			
+			if( $("#phone").val() == ""){
+				changeForm.userPhone.focus();
+				$("#msg_phone").html("전화번호를 입력해주세요"); 
+				return;
+			} else{
+				$("#msg_phone").html(""); 
+			}
+			
+			
+			
+			form.submit();
+			
+		}
+	</script>
+
+<form action="./userInfo" method="post" enctype="multipart/form-data" id="changeForm">
 	<div>
 	<div id="profileBox">
 			<c:choose>
@@ -143,25 +242,33 @@ form{
 	<input type="hidden" name="userNo" value="${user.userNo }">
 	필수정보<br><br>
 	<label for="name">이름</label>
-	<input type="text"id="name" name="userName" value="${user.userName }"><br>
+	<input type="text"id="name" name="userName" value="${user.userName }">
+	<p id="msg_name"></p>
 	
+	<input type="hidden" value="${user.userPw}" id="realPw">
 	<label for ="pw">현재 비밀 번호</label>
-	<input type="text" id="pw" name="userPw" ><br>
+	<input type="text" id="pw" name="originPw">
+	<p id="msg_pw"></p>
 
-	<label for ="pw">새 비밀 번호</label>
-	<input type="text" id="pw"><br>
+	<label for ="newPw">새 비밀 번호</label>
+	<input type="text" id="newPw" name="userPw">
+	<p id="msg_newpw"></p>
 	
 	<label for="pwChk">비밀 번호 확인</label>
-	<input type="text" id="pwChk"><br>
+	<input type="text" id="newPwChk">
+	<p id="msg_chkpw"></p>
 	
 	<label for="nick">닉네임</label>
-	<input type="text" id="nick" name="userNick" value="${user.userNick }"><br>
+	<input type="text" id="nick" name="userNick" value="${user.userNick }">
+	<p id="msg_nick"></p>
 	
 	<label for="email">이메일</label>
-	<input type="text" id="email" name="userEmail" value="${user.userEmail }"><br>
+	<input type="text" id="email" name="userEmail" value="${user.userEmail }">
+	<p id="msg_email"></p>
 	
 	<label for="phone">휴대폰 번호</label>
-	<input type="text" id="phone" name="userPhone" value="${user.userPhone }"><br>
+	<input type="text" id="phone" name="userPhone" value="${user.userPhone }">
+	<p id="msg_phone"></p>
 	
 	<label for="id">아이디</label>
 	<input type="text" id="id" name="userId" value="${user.userId }" style="border:none; outline: none;" readonly><br>
@@ -190,7 +297,7 @@ form{
 	</div>
 	
 </div>
-	<button style="border: 3px solid #B4B4DC;">정보 수정</button>
+	<button style="border: 3px solid #B4B4DC;" id="submitBtn" onclick="checkForm(); return false;">정보 수정</button>
 </form>
 
     <script>
@@ -212,7 +319,7 @@ form{
 			console.log("프로필 삭제입니당")
 			console.log(${userfile.userfileNo})
 			
-			if(confirm('게시글을 저장하시겠습니까?') == true){
+			if(confirm('이미지를 삭제하시겠습니까?') == true){
 				console.log("ok")
 					
 				$.ajax({

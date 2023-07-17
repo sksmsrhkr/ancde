@@ -18,9 +18,7 @@
   </select>
   
   <select id="getUser" parameterType="int" resultType="User">
-  	SELECT user_no, user_name, user_id, user_nick, user_gender, user_email, user_postcode, 
-  	user_addr1, user_addr2, user_addr3, user_phone, user_joindate, user_birth
-  	FROM user_tb WHERE user_no = #{userNo}
+  	SELECT * FROM user_tb WHERE user_no = #{userNo}
   </select>
 
 	<insert id="insertUserFile" parameterType="UserFile">

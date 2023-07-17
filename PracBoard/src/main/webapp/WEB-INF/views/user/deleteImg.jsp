@@ -32,7 +32,7 @@
         var reader = new FileReader();
 
         reader.onload = function(event) {
-          var img = document.getElementById("commfile");
+          var img = document.getElementById("profileImg");
           img.setAttribute("src", event.target.result);
 //           document.querySelector("div#image_container").appendChild(img);
         };

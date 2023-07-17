@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper
+  	namespace="com.myboard.myapp.main.dao.face.MainDao">
+  	
+	<select id="getPopularBoardList" resultType="Map">
+		SELECT * FROM
+		(SELECT rownum rnum, B.* FROM
+		(SELECT u.user_nick, b.board_no, b.title, b.hit, b.write_date from board b, user_tb u
+		WHERE u.user_no = b.user_no
+		AND write_date BETWEEN sysdate -7 AND sysdate
+		ORDER BY hit DESC) B
+		 ORDER BY rnum
+		) WHERE rnum BETWEEN 1 AND 10
+	</select>
+  	
+  	<select id="getNewBoardList" resultType="Map">
+	  	SELECT * FROM
+		(select rownum rnum, B.* FROM
+		(select u.user_nick, b.board_no, b.title, b.hit, b.write_date from board b, user_tb u
+		where u.user_no = b.user_no 
+		order by write_date desc) B
+		order by rnum
+		)where rnum between 1 and 10
+  	</select>
+  	
+  </mapper>

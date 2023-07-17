@@ -23,32 +23,29 @@
 	font-family : SBAggroL;
 	background-color: #8AB78A;
 	text-align: right;
-	font-size: 20px;
-	height: 40px;
+	font-size: 24px;
+	height: 50px;
+	
 }
 
-#headerLink> a{
+#adminhead> a{
 	color: white;
 	text-decoration: none;
 	font-weight: bold;
-	padding: 8px;
+	padding: 20px;
 }
-
-
 </style>
 <body>
 
 <div id="header">
 
-<div id="headerLink" style="padding-top: 8px;">
-	<a href="/"><i class="bi bi-house-door"></i></a>
-	<c:if test="${empty userNo }">
-		<a href="/user/login">로그인</a>	
-		<a href="/user/join">회원 가입</a>	
+<div id= "adminhead">
+	<c:if test="${adminLogin eq false}">
+		<a href="/admin/login">로그인</a>	
+		<a href="/board/list">자유 게시판</a>
 	</c:if>
-	<c:if test="${not empty userNo }">
-		<a href="/user/logout">로그아웃</a>
-		<a href="/mypage/myboardList">마이페이지</a>
+	<c:if test="${adminLogin eq true}">
+		<a href="/board/list">자유 게시판</a>
 	</c:if>
 </div>
 
