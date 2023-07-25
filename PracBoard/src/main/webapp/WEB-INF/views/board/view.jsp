@@ -515,7 +515,10 @@ function replyBtn(th) {
 		})
 }
 
-
+function reportComm(url, name){
+    var options = 'top=10, left=10, width=1000, height=600, status=no, menubar=no, toolbar=no, resizable=no';
+    window.open(url, name, options);
+}
 </script>
 
     <script>
@@ -641,7 +644,8 @@ function replyBtn(th) {
 						<span class="deleteComm" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}">삭제</span>	
 					</c:if>
 					<c:if test="${commList.USER_NO ne userNo}">
-						<span>신고</span>	
+						<a href="javascript:reportComm('./commentList?commentNo=${commList.COMMENT_NO}&reportedNo=${commList.USER_NO}&boardNo=${board.boardNo}', 'popup');">
+						<span>신고</span></a>	
 					</c:if>
 					</div>
 					
@@ -819,6 +823,6 @@ function replyBtn(th) {
 	<div style="float:right;">
 	<a href="#">TOP</a>
 	</div>
-
+	<button type="button">신고</button>
 </div>
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

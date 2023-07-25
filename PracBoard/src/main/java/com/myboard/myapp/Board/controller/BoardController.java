@@ -26,6 +26,7 @@ import com.myboard.myapp.Board.service.face.BoardService;
 import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.user.service.face.UserService;
@@ -229,19 +230,29 @@ public class BoardController {
 //		
 //	}
 	
-	@RequestMapping("/commentList")
-	public void commentList(int boardNo, Model model, HttpSession session) {
+	@GetMapping("/commentList")
+	public void commentList(int commentNo, int reportedNo, int boardNo, Model model, HttpSession session) {
 		
 		int userNo = (Integer) session.getAttribute("userNo");
-		Board board = boardService.getBoard(boardNo);
+		logger.info("adf{}", commentNo);
+		logger.info("adf{}", reportedNo);
+		logger.info("adf{}", boardNo);
 		
-		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
-		
-		model.addAttribute("board", board);
-		model.addAttribute("commentList", commentList);
+		model.addAttribute("commentNo", commentNo);
+		model.addAttribute("reportedNo", reportedNo);
+		model.addAttribute("boardNo", boardNo);
+				
 		
 	}
 	
+	@PostMapping("/commentList")
+	public String reportlist(ReportComment reportComment) {
+		
+		logger.info("adf{}", reportComment);
+		
+		return "redirect: ./list";
+		
+	}
 	@RequestMapping("/updateComment")
 	public ModelAndView updateComment(BoardComment boardComment, MultipartFile file, ModelAndView mav) {
 		logger.info("ㅠㅠㅠㅠㅠ{}", boardComment);

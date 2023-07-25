@@ -9,7 +9,7 @@
 body{
 	font-family: 'SBAggroL';
 	heigth: 100%;
-	background-color: #EBFBFF;
+	background-color: #FAFAD2;
 }
 
 #adminSlider{

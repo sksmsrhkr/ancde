@@ -31,7 +31,7 @@ $(function() {
 							<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
 						</c:if>
 						<br>
-						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있습니다</sapn>
+						<sapn><i class="bi bi-lock-fill"></i> 해당 댓글은 작성자와 운영진만 볼 수 있는 댓글 입니다</sapn>
 				</c:when>
 				
 				<c:when test="${commList.IS_DELETE eq 'y'}">

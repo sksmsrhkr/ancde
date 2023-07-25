@@ -67,13 +67,6 @@
   }
 </style>
 
-<script type="text/javascript">
-function openComm(url, name){
-    var options = 'top=10, left=10, width=1000, height=600, status=no, menubar=no, toolbar=no, resizable=no';
-    window.open(url, name, options);
-}
-</script>
-
 <body>
 
 <div id="container">
@@ -104,7 +97,7 @@ function openComm(url, name){
 					</c:if>
 			&nbsp;&nbsp;
 			<c:if test="${list.COMMENTCNT ne 0}">
-			<a href="javascript:openComm('./commentList?boardNo=${list.BOARD_NO}', 'popup');"><button id="comBtn">${list.COMMENTCNT}</button></a>
+			<button id="comBtn" type="button">${list.COMMENTCNT}</button>
 			</c:if>
 			</td>
 			<td>${list.USER_NICK}</td>
