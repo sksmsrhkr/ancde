@@ -133,7 +133,6 @@
 		margin-right: 10px;
 		object-fit: cover;
 	}
-	
 </style>
 
 <script type="text/javascript">
@@ -264,7 +263,7 @@ $(function() {
 					console.log("댓글 성공")
 					console.log(data)
 					$(".commentList").html(data)
-									$.ajax({
+				$.ajax({
 					type : 'post',
 					url : '/board/commentCnt',
 					data : {'boardNo': ${board.boardNo} },
@@ -515,10 +514,81 @@ function replyBtn(th) {
 		})
 }
 
-function reportComm(url, name){
-    var options = 'top=10, left=10, width=1000, height=600, status=no, menubar=no, toolbar=no, resizable=no';
-    window.open(url, name, options);
-}
+</script>
+
+<script type="text/javascript">
+ function reportComm(url, name){
+	
+ 	console.log("click")
+     var options = 'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no';
+     window.open(url, name, options);
+ }
+
+ </script>
+
+<script type="text/javascript">
+$(function(){
+	$(".upBox").on("click", ".regulate", function(){
+		console.log("click")
+
+		var commentNo = $(this).attr("data-commNo");
+		console.log(commentNo)
+		console.log(${board.boardNo})
+		
+		var chk = confirm("댓글을 규제하시겠습니까?");
+		if(chk) {
+			$.ajax({
+				type : 'post',
+				url : '/admin/regulate',
+				dataType : 'html',
+				data : {
+					boardNo: ${board.boardNo},
+					commentNo: commentNo },
+					
+					success: function(data) {
+						console.log("성공")
+						$(".commentList").html(data)
+							
+					},error: function (request, status, error) {
+				        console.log("error");
+				    }
+				})
+				}
+				
+			})
+		})
+
+$(function(){
+	$(".commentList").on("click", ".delRegulate", function(){
+		console.log("click")
+
+		var commentNo = $(this).attr("data-commNo");
+		console.log(commentNo)
+		console.log(${board.boardNo})
+		
+		var chk = confirm("댓글을 규제하시겠습니까?");
+		if(chk) {
+			$.ajax({
+				type : 'post',
+				url : '/admin/delRegulate',
+				dataType : 'html',
+				data : {
+					boardNo: ${board.boardNo},
+					commentNo: commentNo },
+					
+					success: function(data) {
+						console.log("성공")
+						$(".commentList").html(data)
+							
+					},error: function (request, status, error) {
+				        console.log("error");
+				    }
+				})
+				}
+				
+			})
+		})
+
 </script>
 
     <script>
@@ -550,6 +620,48 @@ function reportComm(url, name){
 		}
  	})
  	})
+ 	
+	$(function() {
+
+	
+	 	$(".upBox").on("click",".regulateBtn", function(){
+	 		
+	 		console.log(${userNo})
+	 		var commentNo = $(this).attr("data-commNo");
+	 		
+	 		console.log(commentNo)
+	 		
+	 		$.ajax({
+	 			type : 'post',
+	 			url : '/board/reportChk',
+	 			dataType : 'json',
+	 			data: {
+	 				userNo : ${userNo},
+	 				commentNo : commentNo},
+	 			
+	 				success: function(cnt) {
+						console.log("성공")
+						console.log(cnt);
+						console.log(commentNo);
+
+						if(cnt >= 1){
+							event.preventDefault();
+							alert("이미 신고한 댓글입니다");
+						
+						} else if (cnt == 0){
+							var commetNo = ${commList.COMMENT_NO}
+							window.open("./reportComm?commentNo=" + commentNo + "&boardNo=${board.boardNo}",'popup');
+						}
+							
+					},error: function (request, status, error) {
+				        console.log("erdsror");
+				    }
+	 			})
+	 			
+	 		})
+	 		
+
+ 		})
  	</script> 
 	
 <div class="container">
@@ -587,7 +699,7 @@ function reportComm(url, name){
 
 	<div id="box">
 	<!-- 좋아요 -->
-	<c:if test="${board.userNo ne userNo }" >
+	<c:if test="${board.userNo ne userNo && login ne null }" >
 		<input type="hidden" value="${board.boardNo}" id="boardNo">
 		<div id="recommend">
 			<c:if test="${isRecommend eq 1}">
@@ -612,7 +724,7 @@ function reportComm(url, name){
 	
 				<c:choose>
 				<%-- !!!!!!!!!!! 내가 못 보는 비댓 !!!!!!!!!!!!!! --%>
-				<c:when test="${commList.CHK_LOCK eq 'y' && commList.USER_NO ne userNo && board.userNo ne userNo}">
+				<c:when test="${commList.CHK_LOCK eq 'y' && commList.USER_NO ne userNo && board.userNo ne userNo && adminLogin ne true}">
 					<c:if test="${commList.STEP eq 1 }">
 						<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
 					</c:if>
@@ -631,11 +743,47 @@ function reportComm(url, name){
 					<sapn>삭제된 댓글 입니다.</sapn>
 				</c:when>
 				
+				<c:when test="${commList.COMMENT_BLIND eq 'y' && adminLogin ne true  && commList.USER_NO ne userNo}">
+					<c:if test="${commList.STEP eq 1 }">
+						<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
+					</c:if>
+					<sapn>관리자에 의해 규제된 글입니다.</sapn>
+				</c:when>						
+				<c:when test="${commList.COMMENT_BLIND eq 'y'  && adminLogin eq true }">
+					<div style="float: right;" id="${commList.COMMENT_NO}">
+					<c:if test="${commList.COMMENT_BLIND eq 'y'  && adminLogin eq true }">
+						<b>${commList.COMMENT_NO}</b>
+						<span class="delRegulate"  data-commNo="${commList.COMMENT_NO}" >해제</span>
+					</c:if>
+					</div>
+					<c:if test="${commList.STEP eq 1 }">
+						<div class="reIcon"><i class="bi bi-arrow-return-right"></i></div>
+					</c:if>
+					<span>${commList.USER_NICK}</span><br>
+					<sapn><b style="color: #CD1F48;">이 댓글은 규제 처리한 댓글입니다.</b> &nbsp;
+					<span style="color: #bebebe;">${commList.COMM_CONTENT }</span>
+					</sapn>
+				</c:when>
+				<c:when test="${commList.COMMENT_BLIND eq 'y' && adminLogin ne true  && commList.USER_NO eq userNo}">
+					<span id="${commList.COMMENT_NO}"><b>${commList.USER_NICK}</b></span><br>
+					<sapn><b style="color: #CD1F48;">이 댓글은 규제 처리한 댓글입니다.</b> 
+					<p style="color: #CD1F48;">${commList.COMM_CONTENT }</p>
+					</sapn>
+				</c:when>
+				
+				
+				
+				
 				<%--비댓 아님 --%>
 					
 					<c:otherwise>
 					<div class="upBox">
 					<div style="float: right;" id="${commList.COMMENT_NO}">
+						<c:if test="${adminLogin eq true && commList.COMMENT_BLIND ne null}">
+							<b>${commList.COMMENT_NO}</b>
+							<span class="regulate" data-commNo="${commList.COMMENT_NO}">규제</span>
+						</c:if>
+						<c:if test="${login ne null}">
 						<span onclick="reply(this)" class="reply" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}" 
 						data-parentNo="${commList.PARENT_NO}" data-userNick="${commList.USER_NICK}"  data-replyNo="${commList.USER_NO}" >답글</span>	
 					<c:if test="${commList.USER_NO eq userNo}">					
@@ -644,9 +792,11 @@ function reportComm(url, name){
 						<span class="deleteComm" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}">삭제</span>	
 					</c:if>
 					<c:if test="${commList.USER_NO ne userNo}">
-						<a href="javascript:reportComm('./commentList?commentNo=${commList.COMMENT_NO}&reportedNo=${commList.USER_NO}&boardNo=${board.boardNo}', 'popup');">
-						<span>신고</span></a>	
+<%-- 						<a href="javascript:reportComm('./reportComm?commentNo=${commList.COMMENT_NO}&boardNo=${board.boardNo}', 'popup');" class="reportBtn"> --%>
+						<span style="color: black;" class="regulateBtn" data-commNo="${commList.COMMENT_NO}">신고</span>
+<!-- 						</a>	 -->
 					</c:if>
+						</c:if>
 					</div>
 					
 					<%-- 대댓 --%>
@@ -662,22 +812,25 @@ function reportComm(url, name){
 									<c:if test="${today - commDate le 2}">
 									<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
 								</c:if>
-							<br>
-							<c:if test="${commList.CHK_LOCK eq 'y' }">
+							<br>							
+							<c:if test="${commList.CHK_LOCK eq 'y' && commList.COMMENT_BLIND ne 'y'}">
 							<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
 							</c:if>
-							<c:if test="${commList.CHK_LOCK eq 'n' }">
+							<c:if test="${commList.CHK_LOCK eq 'n'  && commList.COMMENT_BLIND ne 'y'}">
 							<div style="white-spac: pre-wrap"><b>@${commList.REPLY_NICK}</b>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${commList.COMM_CONTENT}" /></div>
 							</c:if>
 							<c:if test="${commList.COMFILE_STORED  ne null}">
 								<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 							</c:if>
+
+
 							</div>
 						</c:if>
 						
 					<%-- 본댓 --%>
 						<c:if test="${commList.STEP eq 0 }">
-						<div>
+						<div>	
+				
 							<span>${commList.USER_NICK}</span>
 							<c:if test="${board.userNo eq commList.USER_NO}"><button type="button" id="writerBtn">작성자</button></c:if>
 								<span style="font-size: 12px;"><fmt:formatDate value="${commList.COMM_DATE}" pattern="yy.MM.dd HH:mm"/></span>
@@ -688,10 +841,12 @@ function reportComm(url, name){
 									<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
 								</c:if>
 								<br>
-									<c:if test="${commList.CHK_LOCK eq 'y' }">
+
+								
+									<c:if test="${commList.CHK_LOCK eq 'y'}">
 									<div style="white-spac: pre-wrap"><i class="bi bi-lock-fill"></i><c:out value="${commList.COMM_CONTENT}" /></div>
 									</c:if>
-									<c:if test="${commList.CHK_LOCK eq 'n' }">
+									<c:if test="${commList.CHK_LOCK eq 'n'}">
 									<div style="white-spac: pre-wrap"><c:out value="${commList.COMM_CONTENT}" /></div>	
 									</c:if>	
 								</div>
@@ -699,6 +854,8 @@ function reportComm(url, name){
 									<div style="margin-top: 10px;"><img id="commfile" src="/upload/${commList.COMFILE_STORED}" alt=""></div>
 								</c:if>
 						</c:if>
+			
+							
 				
 						<%-- 답글 폼 --%>
 						<div class="replyComm">
@@ -766,13 +923,13 @@ function reportComm(url, name){
 			<form id="commentFile" name="commentFile">
 			<div id="writeComm">
 				<input type="hidden" value="${board.boardNo}" id="boardNo">
+				<c:if test="${login ne null }">
 				<textarea  id="commentContent" onkeyup="count()" maxlength="{200}" style="border: none; width:100%; height: 100px; resize: none; margin-bottom:5px;"
 				 placeholder="인터넷은 함께하는 공간입니다.&#13;&#10;타인을 비방하거나 명예를 훼손하는 댓글은 운영원칙에 따라 제재를 받을 수 있습니다"></textarea>
 				<div  style="float:left;">
 					<label for="file" style="font-size: 20px"><i class="bi bi-camera" ></i></label>
 					<input type="file" id="file" name='file'  accept="image/*" style="display: none;">
 				</div>
-				
 				<div style="float:right;"  >
 					
 						<span class="textCount">0</span>
@@ -781,6 +938,12 @@ function reportComm(url, name){
 					비밀 댓글
 					<input type="checkbox" id="chkLock" name="chkLock">
 					&nbsp;&nbsp;<button type="button"  id="commentBtn">등록</button></div>
+				</c:if>
+					
+				<c:if test="${login eq null }">
+				<textarea  id="commentContent" maxlength="{200}" style="border: none; width:100%; height: 100px; background-color: white; resize: none; margin-bottom:5px;"
+				 placeholder="로그인을 하셔야 댓글을 작성하실 수 있습니다." disabled></textarea>
+				</c:if>
 				</div>
 			</form>
 	<!-- 댓글 끝 -->	

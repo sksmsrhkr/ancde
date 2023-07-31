@@ -2,6 +2,7 @@ package com.myboard.myapp.Board.controller;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -64,7 +68,12 @@ public class BoardController {
 	@RequestMapping("/view")
 	public void boardview (int boardNo, Model model, HttpSession session) {
 		
+		if(session.getAttribute("login") != null ) {
 		int userNo = (Integer) session.getAttribute("userNo");
+		int isRecommend = boardService.isRecommendByNo(userNo, boardNo);
+		
+		model.addAttribute("isRecommend", isRecommend);
+		}
 		Board board = boardService.getBoard(boardNo);
 		
 		//댓글
@@ -78,22 +87,18 @@ public class BoardController {
 		
 		
 		//좋아요
-		int isRecommend = boardService.isRecommendByNo(userNo, boardNo);
 		int cntRecommend = boardService.getCntRecommend(boardNo);
 		
 		//대댓글
-		
-		
 		logger.info("board : {}", board);
 		logger.info("commentList : {}", commentList);
-		UserFile userFile = userService.getUserImg(userNo);
+		
+		
 		
 		model.addAttribute("writerfile", writerFile);
-		model.addAttribute("userfile", userFile);
 		model.addAttribute("board", board);
 		model.addAttribute("boardNo", boardNo);
 		model.addAttribute("writerNick", writerNick);
-		model.addAttribute("isRecommend", isRecommend);
 		model.addAttribute("cntRecommend", cntRecommend);
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("cntComment", commentCnt);
@@ -230,29 +235,47 @@ public class BoardController {
 //		
 //	}
 	
-	@GetMapping("/commentList")
-	public void commentList(int commentNo, int reportedNo, int boardNo, Model model, HttpSession session) {
+	@GetMapping("/reportComm")
+	public void commentList(int commentNo, int boardNo, Model model, HttpSession session) {
 		
-		int userNo = (Integer) session.getAttribute("userNo");
-		logger.info("adf{}", commentNo);
-		logger.info("adf{}", reportedNo);
-		logger.info("adf{}", boardNo);
+//		logger.info("adf{}", commentNo);
+//		logger.info("adf{}", boardNo);
 		
 		model.addAttribute("commentNo", commentNo);
-		model.addAttribute("reportedNo", reportedNo);
 		model.addAttribute("boardNo", boardNo);
 				
 		
 	}
 	
-	@PostMapping("/commentList")
-	public String reportlist(ReportComment reportComment) {
+	@PostMapping("/reportComm")
+	public String reportlist(ReportComment reportComment, HttpSession session) {
 		
-		logger.info("adf{}", reportComment);
+		int userNo = (Integer) session.getAttribute("userNo");
+		reportComment.setUserNo(userNo);
+		logger.info("신고 : {}", reportComment);
 		
-		return "redirect: ./list";
+		int cntReportComm = boardService.cntReport(reportComment.getCommentNo());
+		
+		logger.info("신고 수 : {}", cntReportComm);
+		
+		if(cntReportComm >= 4) {
+			
+			 boardService.insertReportComm(reportComment);
+			 boardService.updateRegulateComm(reportComment.getCommentNo());
+			
+		} else {
+		 boardService.insertReportComm(reportComment);
+		}
+		 
+		return "redirect: ./confirmReport";
 		
 	}
+	
+	@RequestMapping("/confirmReport")
+	public void reportAlert() {
+		
+	}
+	
 	@RequestMapping("/updateComment")
 	public ModelAndView updateComment(BoardComment boardComment, MultipartFile file, ModelAndView mav) {
 		logger.info("ㅠㅠㅠㅠㅠ{}", boardComment);
@@ -349,5 +372,16 @@ public class BoardController {
 		int commentCnt = boardService.getCntComm(boardNo);
 		model.addAttribute("cntComment", commentCnt);
 	}
+	
+	@RequestMapping(value = "/reportChk", method = { RequestMethod.POST })
+	@ResponseBody
+	public int reportCheck(@RequestParam("userNo") int userNo, @RequestParam("commentNo") int commentNo) {
+		logger.info("{}", userNo);
+		logger.info("{}", commentNo);
+		
+		int cnt = boardService.getCntReportByUserNo(userNo, commentNo);
+		
+		return cnt;
+     }
 	
 }	

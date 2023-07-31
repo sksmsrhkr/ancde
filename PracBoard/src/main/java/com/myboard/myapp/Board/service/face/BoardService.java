@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
@@ -56,6 +57,14 @@ public interface BoardService {
 	public int isParentNo(BoardComment boardComment);
 
 	public void upDeleteComm(BoardComment boardComment);
+
+	public void insertReportComm(ReportComment reportComment);
+
+	public int cntReport(int commentNo);
+
+	public void updateRegulateComm(int commentNo);
+
+	public int getCntReportByUserNo(int userNo, int commentNo);
 
 	
 

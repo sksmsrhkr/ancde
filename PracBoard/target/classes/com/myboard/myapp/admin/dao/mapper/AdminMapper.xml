@@ -11,4 +11,72 @@
   		SELECT count(*) FROM admin_tb WHERE admin_id = #{adminId} AND admin_pw = #{adminPw}
   	</select>
   	
+  	<select id="getCntReport" resultType="int">
+  		SELECT count(*)
+		FROM board_comment b, report_comment r 
+		WHERE b.comment_no = r.comment_no 
+  		
+  		<if test="!keyword.equals('') or keyword != null">
+  			AND r.comment_no || r.board_no || b.user_no || b.comm_content LIKE '%' || #{keyword} || '%'
+  		</if>
+  		
+  		<choose>
+			<when test='filter.equalsIgnoreCase("bRel")'>
+				AND comment_blind = 'n'
+			</when>
+			<when test='filter.equalsIgnoreCase("aRel")'>
+				AND comment_blind = 'y'
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+  	</select>
+  	
+  	<select id="getRegulateList" parameterType="Paging" resultType="Map">
+	  	SELECT * FROM
+		(SELECT rownum rnum , R.* from
+		(SELECT r.*, b.comm_content, b.user_no rno,
+			CASE reason_choice
+			WHEN 'a' THEN '욕설, 비방, 차별, 혐오'
+			WHEN 'b' THEN '홍보, 영리 목적	'
+			WHEN 'c' THEN '불법 정보'
+			WHEN 'd' THEN '음란, 청소년 유해'
+			WHEN 'e' THEN '개인 정보 노출, 유포, 거래'
+			WHEN 'f' THEN '도배, 스팸'
+			ELSE '기타'
+			END case
+		 	FROM board_comment b, report_comment r where b.comment_no = r.comment_no 
+		 	
+			<if test="!keyword.equals('') or keyword != null">
+	  			AND r.comment_no || r.board_no || b.user_no || b.comm_content LIKE '%' || #{keyword} || '%'
+	  		</if>
+		 	
+			<choose>
+				<when test='filter.equalsIgnoreCase("bRel")'>
+					AND comment_blind = 'n'
+					ORDER BY report_no DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("aRel")'>
+					AND comment_blind = 'y'
+					ORDER BY report_no DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("relCnt")'>
+					ORDER BY r.report_cnt DESC
+				</when>
+				<otherwise>
+					ORDER BY report_no DESC
+				</otherwise>
+			</choose>
+		) R
+		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<update id="regulateComm" parameterType="int">
+  		UPDATE report_comment SET comment_blind = 'y' WHERE comment_no = #{commentNo}
+  	</update>
+  	
+  	<update id="deleteReguComm" parameterType="int">
+  		UPDATE report_comment SET comment_blind = 'n' WHERE comment_no = #{commentNo}
+  	</update>
+  	
   </mapper>

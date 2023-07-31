@@ -10,6 +10,7 @@ import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.BoardRecommend;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
@@ -64,6 +65,18 @@ public interface BoardDao {
 	public int isParent(BoardComment boardComment);
 
 	public void upDeleteComment(BoardComment boardComment);
+
+	public void insertReportComm(ReportComment reportComment);
+
+	public int getCntReport(int commentNo);
+
+	public void updateReguComm(int commentNo);
+
+	public int getReportByUserNo(@Param("userNo") int userNo, @Param("commentNo") int commentNo);
+
+	public int getRelCnt(int commentNo);
+
+	public void updateRelCnt(ReportComment reportComment);
 
 	
 

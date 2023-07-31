@@ -1,5 +1,8 @@
 package com.myboard.myapp.admin.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.myboard.myapp.admin.dao.face.AdminDao;
 import com.myboard.myapp.admin.service.face.AdminService;
 import com.myboard.myapp.dto.Admin;
+import com.myboard.myapp.util.Paging;
 
 @Service
 public class AdminServiceImpl implements AdminService{
@@ -31,4 +35,32 @@ public class AdminServiceImpl implements AdminService{
 			return false;
 		}
 	}
+
+	@Override
+	public Paging getCntRegulate(int curPage, String filter, String keyword) {
+
+		int totalCount = adminDao.getCntReport(filter, keyword);
+		
+		logger.info("{}", totalCount);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
+	
+	@Override
+	public List<Map<Object, String>> getRegulateList(Paging paging, String filter, String keyword) {
+		return adminDao.getRegulateList(paging, filter , keyword);
+	}
+
+	@Override
+	public void regulateComment(int commentNo) {
+		adminDao.regulateComm(commentNo);
+	}
+
+	@Override
+	public void deleteRegulate(int commentNo) {
+		adminDao.deleteReguComm(commentNo);
+	}
+
 }

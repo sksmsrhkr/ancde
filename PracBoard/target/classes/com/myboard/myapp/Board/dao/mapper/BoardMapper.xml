@@ -80,11 +80,13 @@
   	</insert>
   	
   	<select id="getCommentList" parameterType="int" resultType="Map">
-        SELECT  U.user_nick, F.comfile_stored, C.*
+        SELECT  U.user_nick, F.comfile_stored, C.* , R.comment_blind
         FROM    user_tb U, commentfile F, board_comment C 
+        ,(SELECT DISTINCT comment_no, comment_blind FROM report_comment WHERE board_no = #{boardNo}) R
 		WHERE   C.board_no = #{boardNo}
         AND U.user_no = C.user_no(+)
         AND C.comment_no = F.comment_no(+)
+        AND C.comment_no = R.comment_no(+)
 	    start with C.step = 0
 	    connect by prior C.comment_no = C.parent_no
   	</select>
@@ -179,6 +181,31 @@
 		</selectKey>
   		UPDATE board_comment SET comm_content = null, is_delete = 'y', comm_date = null,
   		board_no = #{boardNo}, user_no = #{userNo}, chk_lock = 'n' WHERE comment_no = #{commentNo}
+  	</update>
+  	
+  	<select id="getCntReport" parameterType="int" resultType="int">
+  		SELECT count(*) FROM report_comment WHERE comment_no = #{commentNo}
+  	</select>
+  	
+  	<update id="updateReguComm" parameterType="int">
+  		UPDATE report_comment SET comment_blind = 'y' WHERE comment_no = #{commentNo}
+  	</update>
+  	
+  	<insert id="insertReportComm" parameterType="ReportComment">
+  		INSERT INTO report_comment (report_no, user_no, board_no, comment_no, reason_choice )
+  		VALUES (report_no_seq.nextval, #{userNo}, #{boardNo}, #{commentNo}, #{reasonChoice} )
+  	</insert>
+  	
+  	<select id="getReportByUserNo" parameterType="Map" resultType="int">
+  		SELECT count(*) FROM report_comment WHERE user_no = #{userNo} AND comment_no = #{commentNo}
+  	</select>
+  	
+  	<select id="getRelCnt" resultType="int" parameterType="int">
+  		SELECT count(*) FROM report_comment WHERE comment_no = #{commentNo}
+  	</select>
+  	
+  	<update id="updateRelCnt" parameterType="ReportComment">
+  		UPDATE report_comment SET report_cnt = #{reportCnt} WHERE comment_no = #{commentNo}
   	</update>
   	
   </mapper>

@@ -1,34 +1,54 @@
 package com.myboard.myapp.dto;
 
+import java.util.Date;
+
 public class ReportComment {
 	
-	private int reportedNo;
+	private int reportNo;
+	private int userNo;
 	private int boardNo;
 	private int commentNo;
 	private String reasonChoice;
+	private char commentBlind;
+	private int reportCnt;
+	private Date reportDate; 
 	
 	public ReportComment() {}
 
 	@Override
 	public String toString() {
-		return "ReportComment [reportedNo=" + reportedNo + ", boardNo=" + boardNo + ", commentNo=" + commentNo
-				+ ", reasonChoice=" + reasonChoice + "]";
+		return "ReportComment [reportNo=" + reportNo + ", userNo=" + userNo + ", boardNo=" + boardNo + ", commentNo="
+				+ commentNo + ", reasonChoice=" + reasonChoice + ", commentBlind=" + commentBlind + ", reportCnt="
+				+ reportCnt + ", reportDate=" + reportDate + "]";
 	}
 
-	public ReportComment(int reportedNo, int boardNo, int commentNo, String reasonChoice) {
+	public ReportComment(int reportNo, int userNo, int boardNo, int commentNo, String reasonChoice, char commentBlind,
+			int reportCnt, Date reportDate) {
 		super();
-		this.reportedNo = reportedNo;
+		this.reportNo = reportNo;
+		this.userNo = userNo;
 		this.boardNo = boardNo;
 		this.commentNo = commentNo;
 		this.reasonChoice = reasonChoice;
+		this.commentBlind = commentBlind;
+		this.reportCnt = reportCnt;
+		this.reportDate = reportDate;
 	}
 
-	public int getReportedNo() {
-		return reportedNo;
+	public int getReportNo() {
+		return reportNo;
 	}
 
-	public void setReportedNo(int reportedNo) {
-		this.reportedNo = reportedNo;
+	public void setReportNo(int reportNo) {
+		this.reportNo = reportNo;
+	}
+
+	public int getUserNo() {
+		return userNo;
+	}
+
+	public void setUserNo(int userNo) {
+		this.userNo = userNo;
 	}
 
 	public int getBoardNo() {
@@ -54,7 +74,29 @@ public class ReportComment {
 	public void setReasonChoice(String reasonChoice) {
 		this.reasonChoice = reasonChoice;
 	}
-	
-	
+
+	public char getCommentBlind() {
+		return commentBlind;
+	}
+
+	public void setCommentBlind(char commentBlind) {
+		this.commentBlind = commentBlind;
+	}
+
+	public int getReportCnt() {
+		return reportCnt;
+	}
+
+	public void setReportCnt(int reportCnt) {
+		this.reportCnt = reportCnt;
+	}
+
+	public Date getReportDate() {
+		return reportDate;
+	}
+
+	public void setReportDate(Date reportDate) {
+		this.reportDate = reportDate;
+	}
 
 }

@@ -20,6 +20,7 @@ import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.BoardRecommend;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
@@ -336,5 +337,35 @@ public class BoardServiceImpl implements BoardService{
 		int commentNo = boardComment.getCommentNo();
 		boardDao.deleteImgFile(commentNo);
 	}
+
+	@Override
+	public void insertReportComm(ReportComment reportComment) {
+		
+		boardDao.insertReportComm(reportComment);
+
+		int relCnt = boardDao.getRelCnt(reportComment.getCommentNo());
 	
+		if(relCnt > 1 ) {
+			reportComment.setReportCnt(relCnt);
+			boardDao.updateRelCnt(reportComment);
+		}
+	}
+	
+	@Override
+	public int cntReport(int commentNo) {
+		return boardDao.getCntReport(commentNo);
+	}
+	
+	@Override
+	public void updateRegulateComm(int commentNo) {
+		boardDao.updateReguComm(commentNo);
+	}
+	
+	@Override
+	public int getCntReportByUserNo(int userNo, int commentNo) {
+		int reportCheck = boardDao.getReportByUserNo(userNo, commentNo);
+				
+		return reportCheck;
+		
+	}
 }

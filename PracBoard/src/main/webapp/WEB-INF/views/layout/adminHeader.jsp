@@ -45,7 +45,7 @@
 		<a href="/board/list">자유 게시판</a>
 	</c:if>
 	<c:if test="${adminLogin eq true}">
-		<a href="/board/list">자유 게시판</a>
+		<a href="/board/list">로그아웃</a>
 	</c:if>
 </div>
 

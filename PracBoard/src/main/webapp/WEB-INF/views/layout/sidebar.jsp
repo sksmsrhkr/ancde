@@ -13,9 +13,9 @@ body{
 
 #slider{
 	margin-top: -60px;
-	width: 15%;
+	width: 300px;
 	height: 1250px;
-	background-color: #8AB78A;
+/*  	background-color: #8AB78A;  */
 	padding-top: 120px;
 	padding-left: 50px;
 	padding-right: 50px;
@@ -65,11 +65,12 @@ body{
 	</c:otherwise>
 	</c:choose>
 	<br><br>
-	<b style="font-size: 24px; text-align: center; color: #E6FFE6;">${user.userNick} &nbsp; 님<br>환영합니다!</b><br>
+	<b style="font-size: 24px; text-align: center; color: black;">${user.userNick} &nbsp; 님<br>환영합니다!</b><br>
 	</c:if>
 	</div>	
 	<div id="side2">
-		<h4><a href="/board/list" >자유 게시판</a></h4>
+		<h4><a href="/board/list" style="color: #8AB78A;" >자유 게시판</a></h4>
+		<h4><a href="/service/faq" style="color: #8AB78A;" >고객 센터</a></h4>
 	</div>
 
 	
