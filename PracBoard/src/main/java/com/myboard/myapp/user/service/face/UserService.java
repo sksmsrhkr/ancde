@@ -21,4 +21,6 @@ public interface UserService {
 
 	public void deleteProfie(int userfileNo);
 
+	public String getUserNick(int userNo);
+
 }

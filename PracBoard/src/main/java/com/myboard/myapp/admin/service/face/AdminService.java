@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.myboard.myapp.dto.Admin;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.util.Paging;
 
 public interface AdminService {
@@ -17,6 +18,17 @@ public interface AdminService {
 	public void regulateComment(int commentNo);
 
 	public void deleteRegulate(int commentNo);
+
+	public Paging getInquiryCnt(int curPage, String filter);
+
+	public List<Inquiry> getQnAList(Paging paging, String filter);
+
+	public int getAdminNo();
+
+	public Paging getCntReBoard(int curPage, String filter, String keyword);
+
+	public List<Map<Object, String>> getRegulateBoardList(Paging paging, String filter, String keyword);
+
 
 	
 

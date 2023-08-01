@@ -120,4 +120,9 @@ public class UserServiceImpl implements UserService {
 	public void deleteProfie(int userfileNo) {
 		userDao.deletePro(userfileNo);
 	}
+
+	@Override
+	public String getUserNick(int userNo) {
+		return userDao.getNick(userNo);
+	}
 }

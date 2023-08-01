@@ -53,15 +53,16 @@ public class MainController {
 		
 		logger.info("가보자{}", userNo);
 		
-		User user = userService.getUserInfo(userNo);
+//		User user = userService.getUserInfo(userNo);
+		String userNick = userService.getUserNick(userNo);
 		
-		logger.info("가보자{}", user);
+		logger.info("가보자{}", userNick);
 		
 		UserFile userFile = userService.getUserImg(userNo);
 	
 		logger.info("가보자{}", userFile);
 		
-		model.addAttribute("user", user);
+		model.addAttribute("userNick", userNick);
 		model.addAttribute("userfile", userFile);
 		
 		}

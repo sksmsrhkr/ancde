@@ -7,4 +7,21 @@
   <mapper
   	namespace="com.myboard.myapp.service.dao.face.ServiceDao">
   	
+  	<insert id="insertInquiry" parameterType="Inquiry">
+  		INSERT INTO inquiry (inquiry_no, user_no, inquiry_type, inquiry_title, inquiry_content)
+  		VALUES ( inquiry_no_seq.nextval, #{userNo}, #{inquiryType}, #{inquiryTitle}, #{inquiryContent } )
+  	</insert>
+  	
+  	<select id="getQnaView" parameterType="int" resultType="Inquiry">
+  		SELECT * FROM inquiry WHERE inquiry_no = #{inquiryNo} 
+  	</select>
+  	
+  	<update id="insertAnswer" parameterType="Inquiry">
+  		UPDATE inquiry SET answer_content = #{answerContent}, answer_state = 'y' WHERE inquiry_no = #{inquiryNo}
+  	</update>
+  	
+  	<update id="deleteAnswer" parameterType="int">
+  		UPDATE inquiry SET answer_content = '', answer_state = 'n' WHERE inquiry_no = #{inquiryNo}
+  	</update>
+  	
   </mapper>

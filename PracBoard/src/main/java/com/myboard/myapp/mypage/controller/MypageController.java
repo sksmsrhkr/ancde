@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.mypage.service.face.MypageService;
@@ -84,6 +85,36 @@ public class MypageController {
 		model.addAttribute("userfile", userFile);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("commentlist", boardComment);
+		model.addAttribute("paging", paging);
+	}
+	
+	@RequestMapping("/inquiryList")
+	public  void inquiryList(@RequestParam(defaultValue = "0") int curPage, HttpSession session, Model model) {
+		
+		int userNo = (Integer) session.getAttribute("userNo");
+		User user = mypageService.getUserInfo(userNo);
+		logger.info("ggg{}", user);
+		
+		String userNick = user.getUserNick();
+		Date joindate = user.getUserJoindate();
+		UserFile userFile = mypageService.getUserImg(userNo);	
+		
+		Paging paging = mypageService.cntInquiry(curPage, userNo);
+		logger.info("{}", paging);
+		List<Inquiry> qnalist = mypageService.getQnAList(paging, userNo);
+		
+		int totalCount = mypageService.getBoardCnt(userNo);
+		int totalComCnt = mypageService.getCommCnt(userNo);
+		
+		
+		logger.info("user: {}", qnalist);
+		
+		model.addAttribute("joindate", joindate);
+		model.addAttribute("commCnt", totalComCnt);
+		model.addAttribute("userNick", userNick);
+		model.addAttribute("userfile", userFile);
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("qnalist", qnalist);
 		model.addAttribute("paging", paging);
 	}
 	

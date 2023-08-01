@@ -54,4 +54,30 @@
 		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
   	</select>
 
+	<select id="getCntInquiry" parameterType="int" resultType="int">
+		SELECT count(*) FROM inquiry WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="getInquiryList" parameterType="Map" resultType="Map">
+		SELECT * FROM 
+		(SELECT  rownum rnum, q.* from
+		(SELECT i.*,
+   			CASE inquiry_type
+			WHEN 'u' THEN '회원정보'
+			WHEN 'b' THEN '블랙리스트	'
+			WHEN 'r' THEN '규제'
+			ELSE '기타'
+			END type,
+			
+			CASE answer_state
+            WHEN 'n' THEN '답변대기'
+            ELSE '답변완료'
+            END state
+            
+            FROM inquiry i) q
+             WHERE user_no = #{userNo}
+		) 
+		WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+	</select>
+	
   </mapper>

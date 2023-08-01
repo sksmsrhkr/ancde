@@ -37,11 +37,11 @@ body{
 <p>블랙 리스트 관리</p>
 <br>
 <h2>신고 관리</h2>
-<p>글 신고 내역</p>
+<p><a href="/admin/regulateBoard">글 신고 내역</a></p>
 <p><a href="./regulateComm">댓글 신고 내역</a></p>
 <br>
 <h2>고객 센터</h2>
-<p>문의 내역</p>
+<p><a href="/admin/serviceCenter">문의 내역</a></p>
 <br>
 <h2>공지 사항</h2>
 <p>작성 내역</p>

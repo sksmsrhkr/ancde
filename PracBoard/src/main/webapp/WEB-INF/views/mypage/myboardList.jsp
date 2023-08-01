@@ -123,6 +123,7 @@ table {
 	<div >
 		<div id="mybox3"><a href="#">내가 쓴 글</a></div>
 		<div id="mybox4"><a href="./commentList">내가 쓴 댓글</a></div>
+		<div id="mybox4"><a href="./inquiryList">1:1 문의 내역</a></div>
 	</div>
 	<br><br>
 	<div id="mybox2">

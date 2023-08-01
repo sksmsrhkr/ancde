@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.mypage.dao.face.MypageDao;
@@ -74,7 +75,21 @@ public class MymaygeServiceImpl implements MypageService {
 	public int getBoardCnt(int userNo) {
 		return  mypageDao.getCntBoard(userNo);
 	}
+
+	@Override
+	public Paging cntInquiry(int curPage, int userNo) {
+		
+		int totalCount = mypageDao.getCntInquiry(userNo);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
 	
+	@Override
+	public List<Inquiry> getQnAList(Paging paging, int userNo) {
+		return mypageDao.getInquiryList(paging, userNo);
+	}
 	
 
 }

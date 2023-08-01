@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.myboard.myapp.admin.dao.face.AdminDao;
 import com.myboard.myapp.admin.service.face.AdminService;
 import com.myboard.myapp.dto.Admin;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.util.Paging;
 
 @Service
@@ -63,4 +64,37 @@ public class AdminServiceImpl implements AdminService{
 		adminDao.deleteReguComm(commentNo);
 	}
 
+	@Override
+	public Paging getInquiryCnt(int curPage, String filter) {
+		
+		int totalCount = adminDao.getQnaCnt(filter);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
+	
+	@Override
+	public List<Inquiry> getQnAList(Paging paging, String filter) {
+		return adminDao.getQnaList(paging, filter);
+	}
+	@Override
+	public int getAdminNo() {
+		return adminDao.getAdminNo();
+	}
+	
+	@Override
+	public Paging getCntReBoard(int curPage, String filter, String keyword) {
+		
+		int totalCount = adminDao.getReboardCnt(filter, keyword);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
+	
+	@Override
+	public List<Map<Object, String>> getRegulateBoardList(Paging paging, String filter, String keyword) {
+		return adminDao.getReBoardList(paging, filter, keyword);
+	}
 }

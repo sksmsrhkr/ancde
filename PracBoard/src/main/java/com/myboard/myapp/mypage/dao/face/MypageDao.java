@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.util.Paging;
@@ -23,5 +24,9 @@ public interface MypageDao {
 	public int getCommCnt(int userNo);
 
 	public List<Map<Object, String>> getCommentList(@Param("paging") Paging paging, @Param("userNo") int userNo);
+
+	public int getCntInquiry(int userNo);
+
+	public List<Inquiry> getInquiryList(@Param("paging") Paging paging, @Param("userNo") int userNo);
 
 }

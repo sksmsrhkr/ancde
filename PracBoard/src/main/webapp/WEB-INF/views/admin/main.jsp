@@ -28,6 +28,16 @@ body{
 #adminSlider> p{
 	font-size: 20px;
 }
+
+  a{
+  	text-decoration: none;
+  	color: black;
+  }
+  
+  a:hover{
+  	color: #497649; 
+  	font-size: 30px;
+  }
 </style>
 
 <div id="adminSlider">
@@ -37,11 +47,11 @@ body{
 <p>블랙 리스트 관리</p>
 <br>
 <h2>신고 관리</h2>
-<p>글 신고 내역</p>
+<p><a href="./regulateBoard">글 신고 내역</a></p>
 <p><a href="./regulateComm">댓글 신고 내역</a></p>
 <br>
 <h2>고객 센터</h2>
-<p>문의 내역</p>
+<p><a href="./serviceCenter">문의 내역</a></p>
 <br>
 <h2>공지 사항</h2>
 <p>작성 내역</p>

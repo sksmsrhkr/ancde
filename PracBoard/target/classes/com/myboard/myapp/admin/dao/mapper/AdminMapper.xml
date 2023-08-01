@@ -11,6 +11,10 @@
   		SELECT count(*) FROM admin_tb WHERE admin_id = #{adminId} AND admin_pw = #{adminPw}
   	</select>
   	
+  	<select id="getAdminNo" resultType="int">
+  		SELECT admin_no FROM admin_tb
+  	</select>
+  	
   	<select id="getCntReport" resultType="int">
   		SELECT count(*)
 		FROM board_comment b, report_comment r 
@@ -78,5 +82,112 @@
   	<update id="deleteReguComm" parameterType="int">
   		UPDATE report_comment SET comment_blind = 'n' WHERE comment_no = #{commentNo}
   	</update>
+  	
+  	<select id="getQnaCnt" resultType="int">
+  		SELECT count(*) FROM inquiry
+  		<choose>
+  		<when test='filter.equalsIgnoreCase("y")'>
+  			WHERE answer_state = 'y'
+  		</when>
+  		<when test='filter.equalsIgnoreCase("n")'>
+  			WHERE answer_state = 'n'
+  		</when>
+  		<otherwise>
+  		</otherwise>
+  		</choose>
+  	</select>
+  	
+  	<select id="getQnaList" parameterType="Paging" resultType="Map">
+  		SELECT * FROM 
+		(SELECT  rownum rnum, q.* from
+		(SELECT i.*,
+   			CASE inquiry_type
+			WHEN 'u' THEN '회원정보'
+			WHEN 'b' THEN '블랙리스트	'
+			WHEN 'r' THEN '규제'
+			ELSE '기타'
+			END type,
+			
+			CASE answer_state
+            WHEN 'n' THEN '답변대기'
+            ELSE '답변완료'
+            END state
+            
+            FROM inquiry i) q
+            
+        <choose>
+	  		<when test='filter.equalsIgnoreCase("y")'>
+	  			WHERE answer_state = 'y'
+	  		</when>
+	  		<when test='filter.equalsIgnoreCase("n")'>
+	  			WHERE answer_state = 'n'
+	  		</when>
+	  		<otherwise>
+	  		</otherwise>
+  		</choose>
+  			ORDER BY inquiry_no DESC
+		) 
+		WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<select id="getReboardCnt" parameterType="String" resultType="int">
+  		SELECT count(*)
+		FROM board b, report_board r 
+		WHERE b.board_no = r.board_no 
+  		
+  		<if test="!keyword.equals('') or keyword != null">
+  			AND r.board_no || b.user_no || b.title || b.content LIKE '%' || #{keyword} || '%'
+  		</if>
+  		
+  		<choose>
+			<when test='filter.equalsIgnoreCase("bRel")'>
+				AND board_blind = 'n'
+			</when>
+			<when test='filter.equalsIgnoreCase("aRel")'>
+				AND board_blind = 'y'
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+  	</select>
+  	
+  	<select id="getReBoardList"  parameterType="Paging" resultType="Map">
+  		 SELECT * FROM
+		(SELECT rownum rnum , R.* from
+		(SELECT r.*, b.title, b.user_no rno,
+			CASE reason_choice
+			WHEN 'a' THEN '욕설, 비방, 차별, 혐오'
+			WHEN 'b' THEN '홍보, 영리 목적	'
+			WHEN 'c' THEN '불법 정보'
+			WHEN 'd' THEN '음란, 청소년 유해'
+			WHEN 'e' THEN '개인 정보 노출, 유포, 거래'
+			WHEN 'f' THEN '도배, 스팸'
+			ELSE '기타'
+			END case
+		 	FROM board b, report_board r where b.board_no = r.board_no 
+		 	
+			<if test="!keyword.equals('') or keyword != null">
+	  			AND r.board_no || b.user_no || b.title || b.content LIKE '%' || #{keyword} || '%'
+	  		</if>
+		 	
+			<choose>
+				<when test='filter.equalsIgnoreCase("bRel")'>
+					AND board_blind = 'n'
+					ORDER BY report_bno DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("aRel")'>
+					AND board_blind = 'y'
+					ORDER BY report_bno DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("relCnt")'>
+					ORDER BY r.report_cnt DESC
+				</when>
+				<otherwise>
+					ORDER BY report_bno DESC
+				</otherwise>
+			</choose>
+		) R
+		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
   	
   </mapper>

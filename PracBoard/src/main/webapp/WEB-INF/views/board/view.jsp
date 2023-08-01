@@ -133,6 +133,7 @@
 		margin-right: 10px;
 		object-fit: cover;
 	}
+	
 </style>
 
 <script type="text/javascript">
@@ -517,16 +518,6 @@ function replyBtn(th) {
 </script>
 
 <script type="text/javascript">
- function reportComm(url, name){
-	
- 	console.log("click")
-     var options = 'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no';
-     window.open(url, name, options);
- }
-
- </script>
-
-<script type="text/javascript">
 $(function(){
 	$(".upBox").on("click", ".regulate", function(){
 		console.log("click")
@@ -606,20 +597,27 @@ $(function(){
         reader.readAsDataURL(event.target.files[0]);
       }
     </script>
+	
+	<script type="text/javascript">
+		function chkUpdate(){
+			var chkChange = confirm("게시글을 수정하시겠습니까?");
+			if(chkChange){
+				location.href = "./updateBoard?boardNo=" + ${board.boardNo};
+			} else{
+				return false;
+			}
+		}
+		function chkDelete(){
+			var chkDelete = confirm("게시글을 삭제하시겠습니까?");
+			if(chkDelete){
+				location.href = "./deleteBoard?boardNo=" + ${board.boardNo};
+			} else{
+				return false;
+			}
+		}
+	</script>
 
  	<script> 
-	$(function() {
-	
- 	$("#upNdel").on("click","#deleteBoard", function(){
- 		console.log("click")
- 		if(confirm('게시글을 삭제하시겠습니까?') == true){
- 			console.log("ok")
- 		} else{
- 			console.log("return")
- 			return false;
-		}
- 	})
- 	})
  	
 	$(function() {
 
@@ -650,7 +648,8 @@ $(function(){
 						
 						} else if (cnt == 0){
 							var commetNo = ${commList.COMMENT_NO}
-							window.open("./reportComm?commentNo=" + commentNo + "&boardNo=${board.boardNo}",'popup');
+
+							window.open("./reportComm?commentNo=" + commentNo + "&boardNo=${board.boardNo}",'popup' );
 						}
 							
 					},error: function (request, status, error) {
@@ -663,6 +662,15 @@ $(function(){
 
  		})
  	</script> 
+
+<script type="text/javascript">
+ function reportComm(url, name){
+	
+ 	console.log("click")
+     var options = 'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no';
+     window.open(url, name, options);
+ }
+ </script>
 	
 <div class="container">
 	<h3 style="font-family: 'SBAggroM'; text-align: center; ">${board.title}</h3>
@@ -683,13 +691,12 @@ $(function(){
 			<h5>${writerNick}</h5>
 			<span style="font-size: 13px;"><fmt:formatDate value="${board.writeDate}" pattern="yy/MM/dd HH:mm:SS"/></span>
 		
-		<div class="numbers" style="float:right; margin-bottom: -20px;">
+		<div class="numbers" style="float:right; margin-bottom: -20px; margin-right: 15px;">
 			<span>조회수 ${board.hit}</span>
 			댓글수<span class="chkCommentCnt"> ${cntComment}</span>
 			추천수<span id="chkRecommCnt"> ${cntRecommend}</span>
-			<span style="margin-top: 50px;"><i class="bi bi-three-dots-vertical" class="modal"></i></span>
-	
 		</div>
+		
 	</div>
 	
 	<!-- 작성자, 글 정보 -->
@@ -766,9 +773,7 @@ $(function(){
 				</c:when>
 				<c:when test="${commList.COMMENT_BLIND eq 'y' && adminLogin ne true  && commList.USER_NO eq userNo}">
 					<span id="${commList.COMMENT_NO}"><b>${commList.USER_NICK}</b></span><br>
-					<sapn><b style="color: #CD1F48;">이 댓글은 규제 처리한 댓글입니다.</b> 
-					<p style="color: #CD1F48;">${commList.COMM_CONTENT }</p>
-					</sapn>
+					<sapn><b style="color: #CD1F48;">이 댓글은 규제 처리한 댓글입니다.</b> </sapn>
 				</c:when>
 				
 				
@@ -947,17 +952,27 @@ $(function(){
 				</div>
 			</form>
 	<!-- 댓글 끝 -->	
-	<div style="float:right; margin-top: 30px;" id="upNdel">
-	<c:if test="${board.userNo eq userNo }" >
-		<a href="./updateBoard?boardNo=${board.boardNo}"><button id="updateBoard">수정</button></a>
-		<a href="./deleteBoard?boardNo=${board.boardNo}"><button id="deleteBoard">삭제</button></a>
-	</c:if>
-	</div>
+<!-- 	<div style="float:right; margin-top: 30px;" id="upNdel"> -->
+<%-- 	<c:if test="${board.userNo eq userNo }" > --%>
+<%-- 		<a href="./updateBoard?boardNo=${board.boardNo}"><button id="updateBoard">수정</button></a> --%>
+<%-- 		<a href="./deleteBoard?boardNo=${board.boardNo}"><button id="deleteBoard">삭제</button></a> --%>
+<%-- 	</c:if> --%>
+<!-- 	</div> -->
 	</div>
 	
-	<div style="margin-top: 10px;">
+	<div style="margin-top: 10px; display: inline-block;">
 	<a href="./list">전체목록</a>
 	<a href="./write">글작성</a>
+	</div>
+	
+	<div style="margin-top: 10px; float: right;">
+	<c:if test="${board.userNo ne userNo }" >
+		<a href="./list">신고</a>
+	</c:if>
+	<c:if test="${board.userNo eq userNo }" >
+		<span style="" onclick="chkUpdate();">수정</span>
+		<span style="" onclick="chkDelete()">삭제</span>
+	</c:if>
 	</div>
 	
 	<div style="margin-top: 15px;">
@@ -986,6 +1001,5 @@ $(function(){
 	<div style="float:right;">
 	<a href="#">TOP</a>
 	</div>
-	<button type="button">신고</button>
 </div>
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

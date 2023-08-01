@@ -23,4 +23,6 @@ public interface UserDao {
 
 	public void deletePro(int userfileNo);
 
+	public String getNick(int userNo);
+
 }

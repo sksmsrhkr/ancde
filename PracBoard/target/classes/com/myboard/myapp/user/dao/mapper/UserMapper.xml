@@ -83,4 +83,8 @@
   		DELETE FROM userfile WHERE userfile_no = #{userfileNo}
   	</delete>
   	
+  	<select id="getNick" parameterType="int" resultType="String">
+  		SELECT user_nick FROM user_tb WHERE user_no = #{userNo}
+  	</select>
+  	
   </mapper>

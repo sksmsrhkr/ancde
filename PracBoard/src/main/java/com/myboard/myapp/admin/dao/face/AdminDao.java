@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.myboard.myapp.dto.Admin;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.util.Paging;
 
 public interface AdminDao {
@@ -19,5 +20,15 @@ public interface AdminDao {
 	public void regulateComm(int commentNo);
 
 	public void deleteReguComm(int commentNo);
+
+	public int getQnaCnt(String filter);
+
+	public List<Inquiry> getQnaList(@Param("paging") Paging paging, @Param("filter") String filter);
+
+	public int getAdminNo();
+
+	public int getReboardCnt(@Param("filter") String filter, @Param("keyword") String keyword);
+
+	public List<Map<Object, String>> getReBoardList(@Param("paging") Paging paging, @Param("filter") String filter, @Param("keyword") String keyword);
 
 }

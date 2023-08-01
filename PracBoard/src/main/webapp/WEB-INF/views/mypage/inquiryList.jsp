@@ -6,11 +6,16 @@
 
 <c:import url="/WEB-INF/views/layout/header.jsp" />
 
+
 <style>
 body{
 	font-family: 'SBAggroL';
 }
 
+#container{
+	top: 0;
+	width: 100%;
+}
 
 #mybox{
 	width:70%;
@@ -31,7 +36,7 @@ body{
 table {
   width: 100%;
   padding-left: 30px;
-  padding-right: 30px;
+  padding-right: 30px; 
   border-spacing: 10px;
 }
   th, td {
@@ -71,19 +76,30 @@ table {
   
   #mybox3{
    	float: left; 
-  	margin-left: 15%;
+  	width: 15%;
+  	padding-top: 10px;
+  	text-align: center;
+  	font-size: 18px;
+  	height: 40px;
+    border: 3px solid #B4B4DC;
+    border-bottom: none;
+  }
+   #mybox4{
+    dislplay: inline-block; 
+  	float: left;
   	width: 15%;
   	padding-top: 10px;
   	text-align: center;
   	font-size: 18px;
   	height: 40px;
   }
-   #mybox3:hover{
+   #mybox4:hover{
    	background-color: #B4B4DC;
    }
-   
-  #mybox5{
-   	float: left; 
+   #mybox5{
+    dislplay: inline-block; 
+  	float: left;
+  	margin-left: 15%;
   	width: 15%;
   	padding-top: 10px;
   	text-align: center;
@@ -93,20 +109,10 @@ table {
    #mybox5:hover{
    	background-color: #B4B4DC;
    }
-   #mybox4{
-    dislplay: inline-block; 
-  	float: left;
-  	width: 15%;
-  	padding-top: 10px;
-  	text-align: center;
-  	font-size: 18px;
-  	height: 40px;
-    border: 3px solid #B4B4DC;
-    border-bottom: none;
-  }
 </style>
 
-	<div id="comContainer">
+
+<div id="container">
 	<div id="mybox">
 		<div id="profile">
 			<c:choose>
@@ -127,45 +133,31 @@ table {
 	</div>
 	
 	<div >
-		<div id="mybox3"><a href="./myboardList">내가 쓴 글</a></div>
+		<div id="mybox5"><a href="./myboardList">내가 쓴 글</a></div>
 		<div id="mybox4"><a href="./commentList">내가 쓴 댓글</a></div>
-		<div id="mybox5"><a href="./inquiryList">1:1 문의 내역</a></div>
+		<div id="mybox3"><a href="./inquiryList">1:1 문의 내역</a></div>
 	</div>
 	<br><br>
 	<div id="mybox2">
 	<table>
 	<thead>
 		<tr>
-		<th></th>
-		<th></th>
+		<th>문의 번호</th>
+		<th>문의 유형</th>
+		<th>문의 제목</th>
+		<th>문의 날짜</th>
+		<th>처리 현황</th>
 		</tr>
 	</thead>
-	<c:forEach items="${commentlist}" var="commentlist">
+	<c:forEach items="${qnalist}" var="inquiry">
 	<tr>
-	<td style="width: 100px; text-align: center;">${commentlist.COMMENT_NO }</td>
-	
-	<td style="text-align:left;">
-	<c:if test="${commentlist.CHK_LOCK eq 'n'}">
-	</c:if>
-	<c:if test="${commentlist.CHK_LOCK eq 'y'}">
-	<i class="bi bi-lock-fill"></i>
-	</c:if>
-		<a href="/board/view?boardNo=${commentlist.BOARD_NO}#${commentlist.COMMENT_NO}">${commentlist.COMM_CONTENT }</a>
-		<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
-		<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
-		<fmt:parseNumber value="${commentlist.COMM_DATE.time / (1000*60*60*24)}" integerOnly="true" var="boardDate" /><!-- 게시글 작성날짜를 숫자로 -->
-		<c:if test="${today - boardDate le 2}">
-		<img src="../resources/new.png" style="margin: 0 auto; width: 13px;" alt="">
-		</c:if>		
-		&nbsp;<span style="font-size: 12px;"><fmt:formatDate value="${commentlist.COMM_DATE }"	pattern="yy/MM/dd HH:mm"/></span>
- 		<br>
-		<span style="font-size: 12px; color: #bebebe;">
-		원문제목: 
-		<a href="/board/view?boardNo=${commentlist.BOARD_NO}" style="color: #bebebe;">${commentlist.TITLE }</a>
-		</span>
-		</td>
-
-	
+	<td>${inquiry.INQUIRY_NO }</td>
+	<td>${inquiry.TYPE}</td>
+	<td><a href="/service/qnaView?inquiryNo=${inquiry.INQUIRY_NO }">${inquiry.INQUIRY_TITLE }</a>	</td>
+	<td><fmt:formatDate value="${inquiry.INQUIRY_DATE }"
+ 							pattern="yy/MM/dd HH:mm"/>
+ 	<td>${inquiry.STATE }</td>
+ 	
 	</tr>
 	</c:forEach>
 	</table>	
@@ -181,27 +173,27 @@ table {
 			<!--1번이 아닐때 = ne  -->
 			<c:if test="${paging.curPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./commentList">
+					href="./myboardList">
 						처음</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./commentList">
+					href="./myboardList">
 						처음</a></li>
 			</c:if>
 
 			<%--이전 페이징 리스트로 이동 --%>
-			<%--    <li class="page-item"><a class="page-link" href="./commentList?curPage=${paging.curPage - paging.pageCount }">&laquo;</a></li> --%>
-			<%--    <li class="page-item"><a class="page-link" href="./commentList?curPage=${paging.endPage- paging.pageCount }">&laquo;</a></li> --%>
+			<%--    <li class="page-item"><a class="page-link" href="./myboardList?curPage=${paging.curPage - paging.pageCount }">&laquo;</a></li> --%>
+			<%--    <li class="page-item"><a class="page-link" href="./myboardList?curPage=${paging.endPage- paging.pageCount }">&laquo;</a></li> --%>
 
 			<c:if test="${paging.startPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./commentList?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
+					href="./myboardList?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.startPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./commentList?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
+					href="./myboardList?curPage=${paging.startPage - paging.pageCount }">&laquo;</a></li>
 			</c:if>
 
 
@@ -209,7 +201,7 @@ table {
 			<%--이전 페이지로 이동 --%>
 			<c:if test="${paging.curPage gt 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./commentList?curPage=${paging.curPage -1 }">&lt;</a></li>
+					href="./myboardList?curPage=${paging.curPage -1 }">&lt;</a></li>
 			</c:if>
 
 			<%--페이징 번호 리스트 --%>
@@ -217,12 +209,12 @@ table {
 				end="${paging.endPage }">
 				<c:if test="${paging.curPage eq i }">
 					<li class="page-item active"><a class="page-link"
-						href="./commentList?curPage=${i }">${i }</a></li>
+						href="./myboardList?curPage=${i }">${i }</a></li>
 				</c:if>
 
 				<c:if test="${paging.curPage ne i }">
 					<li class="page-item "><a class="page-link"
-						href="./commentList?curPage=${i }">${i }</a></li>
+						href="./myboardList?curPage=${i }">${i }</a></li>
 				</c:if>
 
 			</c:forEach>
@@ -230,34 +222,33 @@ table {
 			<%--다음 페이지로 이동 --%>
 			<c:if test="${paging.curPage lt paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./commentList?curPage=${paging.curPage +1 }">&gt;</a></li>
+					href="./myboardList?curPage=${paging.curPage +1 }">&gt;</a></li>
 			</c:if>
 
 			<%--다음 페이징 리스트로 이동 --%>
 			<c:if test="${paging.endPage ne paging.totalPage}">
 				<li class="page-item"><a class="page-link"
-					href="./commentList?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
+					href="./myboardList?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.endPage eq paging.totalPage }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./commentList?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
+					href="./myboardList?curPage=${paging.startPage + paging.pageCount }">&raquo;</a></li>
 			</c:if>
 
 			<%--마지막 페이지로 이동 --%>
 			<c:if test="${paging.curPage ne paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./commentList?curPage=${paging.totalPage }">마지막
+					href="./myboardList?curPage=${paging.totalPage }">마지막
 				</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq paging.totalPage }">
 				<li class="page-item "><a class="page-link"
-					href="./commentList?curPage=${paging.totalPage }">
+					href="./myboardList?curPage=${paging.totalPage }">
 						마지막 </a></li>
 			</c:if>
 		</ul>
 
 	</div>
-
 <c:import url="/WEB-INF/views/layout/footer.jsp" />
 </div>

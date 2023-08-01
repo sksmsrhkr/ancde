@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
 import com.myboard.myapp.util.Paging;
@@ -25,4 +26,8 @@ public interface MypageService {
 	public List<Map<Object, String>> getCommList(Paging paging, int userNo);
 
 	public int getBoardCnt(int userNo);
+
+	public Paging cntInquiry(int curPage, int userNo);
+
+	public List<Inquiry> getQnAList(Paging paging, int userNo);
 }

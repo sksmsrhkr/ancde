@@ -58,19 +58,19 @@ body{
 	<c:if test="${not empty userNo  }">
 	<c:choose>
 	<c:when test="${userfile.userfileStored eq null }">
-	<img id="sideImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
+	<a href="/mypage/myboardList"><img id="sideImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927"></a>
 	</c:when>
 	<c:otherwise>
 	<a href="/mypage/myboardList"><img id="sideImg" src="/upload/${userfile.userfileStored }"  alt=""></a>
 	</c:otherwise>
 	</c:choose>
 	<br><br>
-	<b style="font-size: 24px; text-align: center; color: black;">${user.userNick} &nbsp; 님<br>환영합니다!</b><br>
+	<b style="font-size: 24px; text-align: center; color: black;"><a href="/mypage/myboardList" style="color: black;">${userNick}</a> &nbsp; 님<br>환영합니다!</b><br>
 	</c:if>
 	</div>	
 	<div id="side2">
-		<h4><a href="/board/list" style="color: #8AB78A;" >자유 게시판</a></h4>
-		<h4><a href="/service/faq" style="color: #8AB78A;" >고객 센터</a></h4>
+		<h4><a href="/board/list" style="color: #506EA5;" >자유 게시판</a></h4>
+		<h4><a href="/service/faq" style="color: #506EA5;" >고객 센터</a></h4>
 	</div>
 
 	

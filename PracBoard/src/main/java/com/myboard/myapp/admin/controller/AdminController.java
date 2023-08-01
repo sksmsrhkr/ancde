@@ -20,6 +20,7 @@ import com.myboard.myapp.Board.service.face.BoardService;
 import com.myboard.myapp.admin.service.face.AdminService;
 import com.myboard.myapp.dto.Admin;
 import com.myboard.myapp.dto.Board;
+import com.myboard.myapp.dto.Inquiry;
 import com.myboard.myapp.util.Paging;
 
 @Controller
@@ -45,6 +46,8 @@ public class AdminController {
 		
 		if(isLogin == true) {
 			session.setAttribute("adminLogin", isLogin);
+			int adminNo = adminService.getAdminNo();
+			session.setAttribute("adminNo", adminNo);
 			
 			return "redirect: ./main";
 		
@@ -119,5 +122,42 @@ public class AdminController {
 		return mav;
 	}
 	
+	@RequestMapping("/serviceCenter")
+	public void serviceCenter(Model model, @RequestParam(defaultValue = "0") int curPage, 
+			@RequestParam(defaultValue = "a") String filter) {
+		
+		Paging paging = adminService.getInquiryCnt(curPage, filter);
+		
+		List<Inquiry> qnalist = adminService.getQnAList(paging, filter);
+		
+		logger.info("{}", qnalist);
+		
+		model.addAttribute("filter", filter);
+		model.addAttribute("paging", paging);
+		model.addAttribute("qnalist", qnalist);
+		
+	}
+	
+	@RequestMapping("/regulateBoard")
+	public void regulateBoard(@RequestParam(defaultValue = "0") int curPage, Model model
+				, @RequestParam(defaultValue = "date") String filter
+				, @RequestParam(value = "keyword",required = false, defaultValue = "") String keyword) {
+		
+		logger.info("filter : {}", filter);
+		logger.info("keyword : {}", keyword);
+		
+		Paging paging = adminService.getCntReBoard(curPage, filter, keyword);
+		
+		List<Map<Object, String>> reBoardList = adminService.getRegulateBoardList(paging, filter, keyword);
+		
+		logger.info("{}", paging);
+		logger.info("{}", reBoardList);
+		
+		model.addAttribute("paging", paging);
+		model.addAttribute("filter", filter);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("reBoardList", reBoardList);
+		
+	}
 	
 }
