@@ -557,7 +557,7 @@ $(function(){
 		console.log(commentNo)
 		console.log(${board.boardNo})
 		
-		var chk = confirm("댓글을 규제하시겠습니까?");
+		var chk = confirm("규제를 해제하시겠습니까?");
 		if(chk) {
 			$.ajax({
 				type : 'post',
@@ -643,13 +643,13 @@ $(function(){
 						console.log(commentNo);
 
 						if(cnt >= 1){
-							event.preventDefault();
 							alert("이미 신고한 댓글입니다");
 						
 						} else if (cnt == 0){
 							var commetNo = ${commList.COMMENT_NO}
 
-							window.open("./reportComm?commentNo=" + commentNo + "&boardNo=${board.boardNo}",'popup' );
+							window.open("./reportComm?commentNo=" + commentNo + "&boardNo=${board.boardNo}",'popup' ,
+									'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no');
 						}
 							
 					},error: function (request, status, error) {
@@ -663,17 +663,55 @@ $(function(){
  		})
  	</script> 
 
-<script type="text/javascript">
- function reportComm(url, name){
+ 	<script> 
+ 	
+	$(function() {
+
 	
- 	console.log("click")
-     var options = 'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no';
-     window.open(url, name, options);
- }
- </script>
+	 	$(".reportBbox").on("click",".relBoardBtn", function(){
+	 		
+	 		console.log(${board.boardNo})
+	 		
+	 		$.ajax({
+	 			type : 'post',
+	 			url : '/board/reportBoardCnt',
+	 			dataType : 'json',
+	 			data: {
+	 				boardNo : ${board.boardNo} 
+	 				},
+	 			
+	 				success: function(result) {
+						console.log("성공")
+						console.log(result);
+
+						if(result >= 1){
+							alert("이미 신고한 글입니다");
+						
+						} else if (result == 0){
+							var commetNo = ${commList.COMMENT_NO}
+
+							window.open("./reportBoard?boardNo=" + ${board.boardNo} + "&boardNo=${board.boardNo}",'popup' ,
+									'top=10, left=10, width=450, height=600, status=no, menubar=no, toolbar=no, resizable=no');
+						}
+							
+					},error: function (request, status, error) {
+				        console.log("erdsror");
+				    }
+	 			})
+	 			
+	 		})
+	 		
+
+ 		})
+ 	</script> 
 	
 <div class="container">
+	<c:if test="${isBlind eq 0}">
 	<h3 style="font-family: 'SBAggroM'; text-align: center; ">${board.title}</h3>
+	</c:if>
+	<c:if test="${isBlind ne 0}">
+	<h3 style="font-family: 'SBAggroM'; text-align: center; ">이 글은 괸리자에 의해 규제된 글입니다</h3>
+	</c:if>
 	<br>
 	<!-- 작성자, 글 정보 -->
 		<div id="profile">
@@ -681,14 +719,22 @@ $(function(){
 			<c:when test="${writerfile.userfileStored eq null }">
 			<img id="profileImg" alt="" src="https://t1.daumcdn.net/cfile/tistory/2513B53E55DB206927">
 			</c:when>
+			<c:when test="${isBlind ne 0}">
+			</c:when>
 			<c:otherwise>
 			<img id="profileImg" src="/upload/${writerfile.userfileStored }"  alt="">
 			</c:otherwise>
 			</c:choose>
 		</div>
-	<div style="height: 80px; padding-top: 20px; ">
-<!-- 			<h6><i class="bi bi-person-circle"></i>&nbsp;&nbsp;</h6> -->
+		<div style="height: 80px; padding-top: 20px; ">
+			<c:choose>
+			<c:when test="${isBlind eq 0}">
 			<h5>${writerNick}</h5>
+			</c:when>
+			<c:otherwise>
+			<h5>익명</h5>
+			</c:otherwise>
+			</c:choose>
 			<span style="font-size: 13px;"><fmt:formatDate value="${board.writeDate}" pattern="yy/MM/dd HH:mm:SS"/></span>
 		
 		<div class="numbers" style="float:right; margin-bottom: -20px; margin-right: 15px;">
@@ -702,6 +748,8 @@ $(function(){
 	<!-- 작성자, 글 정보 -->
 	<hr>
 	<!-- 글 내용 -->
+	<c:choose>
+	<c:when test="${isBlind eq 0}">
 	<div id="boardContent" style="margin: 50px 10px;">${board.content}</div>
 
 	<div id="box">
@@ -723,6 +771,12 @@ $(function(){
 			댓글 <span class="chkCommentCnt">${cntComment}</span>
 		</div>
 	</div>
+	</c:when>
+	<c:otherwise>
+	<div id="boardContent" style="margin: 50px 10px; min-height: 100px; text-align: center; padding-top: 25px;">
+	<h5>이 글은 관리자에 의해 규제된 글입니다.</h5></div>
+	</c:otherwise>
+	</c:choose>
 	<!-- 추천, 댓글 총 갯수 -->
 	<hr>
 	<div  id="commentBox">
@@ -797,9 +851,7 @@ $(function(){
 						<span class="deleteComm" data-commNo="${commList.COMMENT_NO}" data-boardNo="${board.boardNo}">삭제</span>	
 					</c:if>
 					<c:if test="${commList.USER_NO ne userNo}">
-<%-- 						<a href="javascript:reportComm('./reportComm?commentNo=${commList.COMMENT_NO}&boardNo=${board.boardNo}', 'popup');" class="reportBtn"> --%>
 						<span style="color: black;" class="regulateBtn" data-commNo="${commList.COMMENT_NO}">신고</span>
-<!-- 						</a>	 -->
 					</c:if>
 						</c:if>
 					</div>
@@ -952,12 +1004,6 @@ $(function(){
 				</div>
 			</form>
 	<!-- 댓글 끝 -->	
-<!-- 	<div style="float:right; margin-top: 30px;" id="upNdel"> -->
-<%-- 	<c:if test="${board.userNo eq userNo }" > --%>
-<%-- 		<a href="./updateBoard?boardNo=${board.boardNo}"><button id="updateBoard">수정</button></a> --%>
-<%-- 		<a href="./deleteBoard?boardNo=${board.boardNo}"><button id="deleteBoard">삭제</button></a> --%>
-<%-- 	</c:if> --%>
-<!-- 	</div> -->
 	</div>
 	
 	<div style="margin-top: 10px; display: inline-block;">
@@ -965,9 +1011,9 @@ $(function(){
 	<a href="./write">글작성</a>
 	</div>
 	
-	<div style="margin-top: 10px; float: right;">
-	<c:if test="${board.userNo ne userNo }" >
-		<a href="./list">신고</a>
+	<div class="reportBbox" style="margin-top: 10px; float: right;">
+	<c:if test="${board.userNo ne userNo && login ne null}" >
+		<span class="relBoardBtn">신고</span>
 	</c:if>
 	<c:if test="${board.userNo eq userNo }" >
 		<span style="" onclick="chkUpdate();">수정</span>

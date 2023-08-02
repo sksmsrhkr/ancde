@@ -13,7 +13,7 @@ public interface UserService {
 
 	public User getUserInfo(int userNo);
 
-	public void insertProfile(User user, MultipartFile file);
+	public void insertProfile(User user);
 
 	public UserFile getUserImg(int userNo);
 
@@ -22,5 +22,9 @@ public interface UserService {
 	public void deleteProfie(int userfileNo);
 
 	public String getUserNick(int userNo);
+
+	public void updateProfileNick(User user, MultipartFile file);
+
+	public void updatePw(User user);
 
 }

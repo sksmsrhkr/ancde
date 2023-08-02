@@ -31,4 +31,5 @@ public interface AdminDao {
 
 	public List<Map<Object, String>> getReBoardList(@Param("paging") Paging paging, @Param("filter") String filter, @Param("keyword") String keyword);
 
+
 }

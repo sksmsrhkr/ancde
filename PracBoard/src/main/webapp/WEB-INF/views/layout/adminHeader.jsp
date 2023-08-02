@@ -40,12 +40,11 @@
 <div id="header">
 <div id= "adminhead">
 <a href="/admin/main"><i class="bi bi-house-door"></i></a>
-	<c:if test="${adminLogin eq false}">
+	<c:if test="${empty adminLogin}">
 		<a href="/admin/login">로그인</a>	
-		<a href="/board/list">자유 게시판</a>
 	</c:if>
 	<c:if test="${adminLogin eq true}">
-		<a href="/board/list">로그아웃</a>
+		<a href="/admin/logout">로그아웃</a>
 	</c:if>
 </div>
 

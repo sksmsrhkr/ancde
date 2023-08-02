@@ -79,9 +79,9 @@
   		UPDATE report_comment SET comment_blind = 'y' WHERE comment_no = #{commentNo}
   	</update>
   	
-  	<update id="deleteReguComm" parameterType="int">
-  		UPDATE report_comment SET comment_blind = 'n' WHERE comment_no = #{commentNo}
-  	</update>
+  	<delete id="deleteReguComm" parameterType="int">
+  		DELETE report_comment WHERE comment_no = #{commentNo}
+	</delete>
   	
   	<select id="getQnaCnt" resultType="int">
   		SELECT count(*) FROM inquiry

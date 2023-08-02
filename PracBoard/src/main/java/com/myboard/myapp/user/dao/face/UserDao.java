@@ -25,4 +25,8 @@ public interface UserDao {
 
 	public String getNick(int userNo);
 
+	public void updateUserNick(User user);
+
+	public void updateUserpw(User user);
+
 }

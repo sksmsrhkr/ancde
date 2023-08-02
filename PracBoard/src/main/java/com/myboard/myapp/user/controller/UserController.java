@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,15 +82,42 @@ public class UserController {
 	}
 	
 	@PostMapping("/userInfo")
-	public String editUser(HttpSession session, MultipartFile file, User user) {
-		logger.info(file.getOriginalFilename());
+	public String editUser(HttpSession session, User user) {
 		logger.info("유젖 정보 {}", user);
 		
 		int userNo = (Integer) session.getAttribute("userNo");
 
-		userService.insertProfile(user, file);
+		userService.insertProfile(user);
 	
 		return "redirect: /mypage/myboardList";
+	}
+	
+	@GetMapping("/profile")
+	public void profile(HttpSession session, Model model) {
+		
+		int userNo = (Integer) session.getAttribute("userNo");
+		User user = userService.getUserInfo(userNo);
+		
+		logger.info("가보자{}", user);
+		
+		UserFile userFile = userService.getUserImg(userNo);
+	
+		logger.info("가보자{}", userFile);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("userfile", userFile);
+	}
+	
+	@PostMapping("/profile")
+	public String profileChange(MultipartFile file, User user) {
+		
+		logger.info("{}", file.getOriginalFilename());
+		logger.info("{}", user);
+		
+		userService.updateProfileNick(user, file);
+		
+		return "redirect: /mypage/myboardList";
+		
 	}
 	
 	@RequestMapping("/logout")
@@ -114,6 +142,28 @@ public class UserController {
 		mav.setViewName("/user/deleteImg");
 		
 		return mav;
+	}
+	
+	@GetMapping("pwChange")
+	public void pwChange(int userNo, Model model) {
+		User user = userService.getUserInfo(userNo);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("userNo", userNo);
+	}
+
+	@PostMapping("pwChange")
+	public String updatePw(User user) {
+		logger.info("{}", user);
+		
+		userService.updatePw(user);
+		
+		return "redirect: /user/pwAlert";
+	}
+	
+	@RequestMapping("/pwAlert")
+	public void pwChangeAlert() {
+		
 	}
 
 }

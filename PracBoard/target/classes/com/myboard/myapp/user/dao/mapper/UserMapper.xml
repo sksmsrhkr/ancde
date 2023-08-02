@@ -63,11 +63,6 @@
 	
 	<update id="updateUser" parameterType="User">
 		UPDATE user_tb SET
-		user_name = #{userName},
-		user_nick = #{userNick},
-		user_pw = #{userPw},
-		user_email = #{userEmail},
-		user_phone = #{userPhone},
 		user_postcode = #{userPostcode},
 		user_addr1 = #{userAddr1},
 		user_addr2 = #{userAddr2},
@@ -86,5 +81,17 @@
   	<select id="getNick" parameterType="int" resultType="String">
   		SELECT user_nick FROM user_tb WHERE user_no = #{userNo}
   	</select>
+  	
+  	<update id="updateUserNick" parameterType="User">
+  		UPDATE user_tb SET
+  		user_nick = #{userNick}
+  		WHERE user_no = #{userNo}
+  	</update>
+  	
+  	<update id="updateUserpw" parameterType="User">
+  		UPDATE user_tb SET
+  		user_pw = #{userPw}
+  		WHERE user_no = #{userNo}
+  	</update>
   	
   </mapper>

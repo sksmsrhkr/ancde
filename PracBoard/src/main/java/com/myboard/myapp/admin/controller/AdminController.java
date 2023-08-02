@@ -56,7 +56,12 @@ public class AdminController {
 		}	
 	}
 	
-	
+	@RequestMapping("/logout")
+	public String adminLogout(HttpSession session) {
+		session.invalidate();
+		
+		return "redirect: ./main";
+	}
 	
 	@RequestMapping("/main")
 	public void managePage() {
@@ -108,6 +113,7 @@ public class AdminController {
 	public ModelAndView delRegulate(int commentNo, int boardNo, ModelAndView mav) {
 		logger.info("댓번호 : {}", commentNo);
 		adminService.deleteRegulate(commentNo);
+		
 		
 		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
 		logger.info("고고{}", commentList);

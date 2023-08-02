@@ -30,6 +30,7 @@ import com.myboard.myapp.Board.service.face.BoardService;
 import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportBoard;
 import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.dto.UserFile;
@@ -80,11 +81,13 @@ public class BoardController {
 		List<Map<String, Object>> commentList = boardService.getComment(boardNo);
 		int commentCnt = boardService.getCntComm(boardNo);
 		
+		//규젱 여부
+		int isBlindBoard = boardService.getIsBlindBoard(boardNo);
+		
 		//작성자 정보
 		User user = boardService.getUserInfo(board.getUserNo());
 		String writerNick = user.getUserNick();
 		UserFile writerFile = userService.getUserImg(board.getUserNo());
-		
 		
 		//좋아요
 		int cntRecommend = boardService.getCntRecommend(boardNo);
@@ -102,6 +105,8 @@ public class BoardController {
 		model.addAttribute("cntRecommend", cntRecommend);
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("cntComment", commentCnt);
+		model.addAttribute("isBlind", isBlindBoard);
+		
 
 	}
 	
@@ -226,25 +231,12 @@ public class BoardController {
 		model.addAttribute("boardComment", boardComment);
 	}
 	
-//	@RequestMapping("/img")
-//	public void chk(int commNo, Model model) {
-//		CommentFile commentFile = boardService.getCommImg(commNo);
-//		
-//		logger.info("{}", commentFile);
-//		model.addAttribute("img", commentFile);
-//		
-//	}
-	
 	@GetMapping("/reportComm")
 	public void commentList(int commentNo, int boardNo, Model model, HttpSession session) {
-		
-//		logger.info("adf{}", commentNo);
-//		logger.info("adf{}", boardNo);
 		
 		model.addAttribute("commentNo", commentNo);
 		model.addAttribute("boardNo", boardNo);
 				
-		
 	}
 	
 	@PostMapping("/reportComm")
@@ -254,18 +246,7 @@ public class BoardController {
 		reportComment.setUserNo(userNo);
 		logger.info("신고 : {}", reportComment);
 		
-		int cntReportComm = boardService.cntReport(reportComment.getCommentNo());
-		
-		logger.info("신고 수 : {}", cntReportComm);
-		
-		if(cntReportComm >= 4) {
-			
-			 boardService.insertReportComm(reportComment);
-			 boardService.updateRegulateComm(reportComment.getCommentNo());
-			
-		} else {
-		 boardService.insertReportComm(reportComment);
-		}
+		boardService.insertReportComm(reportComment);
 		 
 		return "redirect: ./confirmReport";
 		
@@ -383,5 +364,40 @@ public class BoardController {
 		
 		return cnt;
      }
+	
+	@RequestMapping("/reportBoardCnt")
+	@ResponseBody
+	public int reportBoardChk(HttpSession session, int boardNo) {
+		
+		int userNo = (Integer)session.getAttribute("userNo");
+		
+		logger.info("유저 확인 : {}", userNo);
+		logger.info("boardNo 확인 : {}", boardNo);
+		
+		int result = boardService.getCntBoardReportbyUserNo(userNo, boardNo);
+		logger.info("결과 확인 : {}", result);
+		
+		return result;
+		
+	}
+	
+	@GetMapping("/reportBoard")
+	public void reportBoardView(int boardNo, Model model) {
+		logger.info("{}", boardNo);
+		model.addAttribute("boardNo", boardNo);
+	}
+	
+	@PostMapping("/reportBoard")
+	public String reportBoard(ReportBoard reportBoard, HttpSession session) {
+		
+		int userNo = (Integer) session.getAttribute("userNo");
+		reportBoard.setUserNo(userNo);
+		logger.info("신고 : {}", reportBoard);
+		
+		boardService.insertReportBoard(reportBoard);
+		
+		return "redirect: ./confirmReport";
+	}
+	
 	
 }	

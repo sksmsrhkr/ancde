@@ -10,6 +10,7 @@ import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.BoardRecommend;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportBoard;
 import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
@@ -68,8 +69,6 @@ public interface BoardDao {
 
 	public void insertReportComm(ReportComment reportComment);
 
-	public int getCntReport(int commentNo);
-
 	public void updateReguComm(int commentNo);
 
 	public int getReportByUserNo(@Param("userNo") int userNo, @Param("commentNo") int commentNo);
@@ -77,6 +76,19 @@ public interface BoardDao {
 	public int getRelCnt(int commentNo);
 
 	public void updateRelCnt(ReportComment reportComment);
+
+	public int getBoardReportCnt(@Param("userNo") int userNo, @Param("boardNo") int boardNo);
+
+	public void insertReportBoard(ReportBoard reportBoard);
+
+	public int getReportedBoardCnt(int boardNo);
+
+	public void updateBoardReportCnt(ReportBoard reportBoard);
+
+	public void updateRelBoard(ReportBoard reportBoard);
+
+	public int isBlindBoard(int boardNo);
+
 
 	
 

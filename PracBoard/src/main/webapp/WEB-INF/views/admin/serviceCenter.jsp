@@ -128,7 +128,7 @@ function filterSelect(){
 		<td>${list.USER_NO}</td>
 		<td><a href="/service/qnaView?inquiryNo=${list.INQUIRY_NO}">${list.INQUIRY_TITLE}</a></td>
 		<td>${list.TYPE}</td>
-		<td>${list.INQUIRY_DATE}</td>
+		<td><fmt:formatDate value="${list.INQUIRY_DATE}" pattern="yy/MM/dd HH:mm"/> </td>
 		<td>${list.STATE}</td>
 	</tr>
 	</c:forEach>

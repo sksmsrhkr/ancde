@@ -183,10 +183,6 @@
   		board_no = #{boardNo}, user_no = #{userNo}, chk_lock = 'n' WHERE comment_no = #{commentNo}
   	</update>
   	
-  	<select id="getCntReport" parameterType="int" resultType="int">
-  		SELECT count(*) FROM report_comment WHERE comment_no = #{commentNo}
-  	</select>
-  	
   	<update id="updateReguComm" parameterType="int">
   		UPDATE report_comment SET comment_blind = 'y' WHERE comment_no = #{commentNo}
   	</update>
@@ -207,5 +203,30 @@
   	<update id="updateRelCnt" parameterType="ReportComment">
   		UPDATE report_comment SET report_cnt = #{reportCnt} WHERE comment_no = #{commentNo}
   	</update>
+  	
+  	<select id="getBoardReportCnt" parameterType="Map" resultType="int">
+  		SELECT count(*) FROM report_board WHERE user_no = #{userNo} AND board_no = #{boardNo}
+  	</select>
+  	
+  	 <insert id="insertReportBoard" parameterType="reportBoard">
+  		INSERT INTO report_board (report_bno, user_no, board_no, reason_choice)
+  		VALUES (report_bno_seq.nextval, #{userNo}, #{boardNo}, #{reasonChoice})
+  	</insert>
+  	
+  	<select id="getReportedBoardCnt" parameterType="int" resultType="int">
+  		SELECT count(*) FROM report_board WHERE board_no = #{boardNo}
+  	</select>
+  	
+  	<update id="updateBoardReportCnt" parameterType="reportBoard">
+  		UPDATE report_board SET report_cnt = #{reportCnt} WHERE board_no = #{boardNo}
+  	</update>
+  	
+  	<update id="updateRelBoard" parameterType="reportBoard">
+  		UPDATE report_board SET board_blind = 'y' WHERE board_no = #{boardNo}
+  	</update>
+	
+	<select id="isBlindBoard" parameterType="int" resultType="int">
+		SELECT count(*) FROM report_board WHERE board_no = #{boardNo} AND board_blind = 'y'
+	</select>
   	
   </mapper>

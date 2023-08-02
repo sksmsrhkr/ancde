@@ -20,6 +20,7 @@ import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.BoardComment;
 import com.myboard.myapp.dto.BoardRecommend;
 import com.myboard.myapp.dto.CommentFile;
+import com.myboard.myapp.dto.ReportBoard;
 import com.myboard.myapp.dto.ReportComment;
 import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
@@ -342,23 +343,18 @@ public class BoardServiceImpl implements BoardService{
 	public void insertReportComm(ReportComment reportComment) {
 		
 		boardDao.insertReportComm(reportComment);
-
+		
 		int relCnt = boardDao.getRelCnt(reportComment.getCommentNo());
-	
-		if(relCnt > 1 ) {
-			reportComment.setReportCnt(relCnt);
+		reportComment.setReportCnt(relCnt);
+
+		logger.info("확인!!!!! {}", reportComment);
+		
+		if(relCnt > 1 && relCnt < 5) {
 			boardDao.updateRelCnt(reportComment);
+		} else if (relCnt >= 5 ) {
+			boardDao.updateRelCnt(reportComment);
+			boardDao.updateReguComm(reportComment.getCommentNo());
 		}
-	}
-	
-	@Override
-	public int cntReport(int commentNo) {
-		return boardDao.getCntReport(commentNo);
-	}
-	
-	@Override
-	public void updateRegulateComm(int commentNo) {
-		boardDao.updateReguComm(commentNo);
 	}
 	
 	@Override
@@ -366,6 +362,35 @@ public class BoardServiceImpl implements BoardService{
 		int reportCheck = boardDao.getReportByUserNo(userNo, commentNo);
 				
 		return reportCheck;
+	}
+
+	@Override
+	public int getCntBoardReportbyUserNo(int userNo, int boardNo) {
+		return boardDao.getBoardReportCnt(userNo, boardNo);
+	}
+	
+	@Override
+	public void insertReportBoard(ReportBoard reportBoard) {
+		boardDao.insertReportBoard(reportBoard);
 		
+		int reportCnt = boardDao.getReportedBoardCnt(reportBoard.getBoardNo());
+		
+		logger.info("확인해봐요 {}", reportCnt);
+		
+		if( reportCnt > 1 && reportCnt <5 ) {
+			reportBoard.setReportCnt(reportCnt);
+			boardDao.updateBoardReportCnt(reportBoard);
+		} else if(reportCnt >= 5) {
+			reportBoard.setReportCnt(reportCnt);
+			boardDao.updateBoardReportCnt(reportBoard);
+			boardDao.updateRelBoard(reportBoard);
+		}
+		
+		
+	}
+
+	@Override
+	public int getIsBlindBoard(int boardNo) {
+		return boardDao.isBlindBoard(boardNo);
 	}
 }
