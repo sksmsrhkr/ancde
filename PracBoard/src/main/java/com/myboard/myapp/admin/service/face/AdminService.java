@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.myboard.myapp.dto.Admin;
 import com.myboard.myapp.dto.Inquiry;
+import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
 public interface AdminService {
@@ -28,6 +29,12 @@ public interface AdminService {
 	public Paging getCntReBoard(int curPage, String filter, String keyword);
 
 	public List<Map<Object, String>> getRegulateBoardList(Paging paging, String filter, String keyword);
+
+	public Paging getUserCnt(int curPage, String filter, String searchType, String keyword);
+
+	public List<User> getUserList(Paging paging, String filter, String searchType, String keyword);
+
+	public void updateUser(User user);
 
 
 	

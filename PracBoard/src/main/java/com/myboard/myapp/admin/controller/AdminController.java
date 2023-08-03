@@ -21,6 +21,9 @@ import com.myboard.myapp.admin.service.face.AdminService;
 import com.myboard.myapp.dto.Admin;
 import com.myboard.myapp.dto.Board;
 import com.myboard.myapp.dto.Inquiry;
+import com.myboard.myapp.dto.User;
+import com.myboard.myapp.dto.UserFile;
+import com.myboard.myapp.user.service.face.UserService;
 import com.myboard.myapp.util.Paging;
 
 @Controller
@@ -31,6 +34,7 @@ public class AdminController {
 	
 	@Autowired AdminService adminService;
 	@Autowired BoardService boardService;
+	@Autowired UserService userService;
 	
 	@GetMapping("/login")
 	public void adminLogin() {
@@ -166,4 +170,54 @@ public class AdminController {
 		
 	}
 	
+	@GetMapping("/changeUserInfo")
+	public void changeInfo(int userNo, Model model) {
+		User user = userService.getUserInfo(userNo);
+		
+		logger.info("가보자{}", user);
+		
+		UserFile userFile = userService.getUserImg(userNo);
+	
+		logger.info("가보자{}", userFile);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("userfile", userFile);
+	}
+	
+	@PostMapping("/changeUserInfo")
+	public String changeUserInfo(User user) {
+		
+		logger.info("{}", user);
+		
+		adminService.updateUser(user);
+		
+		return "redirect: /admin/userList";
+	}
+	
+	@RequestMapping("/userList")
+	public void userList(Model model, 
+			@RequestParam(defaultValue = "no")  String filter, 
+			@RequestParam(defaultValue = "0") int curPage, 
+			@RequestParam(value = "searchType",required = false, defaultValue = "no") String searchType, 
+			@RequestParam(value = "keyword",required = false, defaultValue = "") String keyword) {
+		
+		Paging paging = adminService.getUserCnt(curPage, filter, searchType, keyword);
+		
+		List<User> userList = adminService.getUserList(paging, filter, searchType, keyword);
+		
+		logger.info("{}", curPage);
+		logger.info("{}", filter);
+		logger.info("{}", searchType);
+		logger.info("{}", keyword);
+		logger.info("{}", paging);
+		logger.info("{}", userList);
+		
+		model.addAttribute("userList", userList);
+		model.addAttribute("filter", filter);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("paging", paging);
+		
+		
+	}
 }

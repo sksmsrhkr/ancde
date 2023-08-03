@@ -109,6 +109,7 @@ function deleteComm(){
 
 <br><br>
 <h3>${inquiry.inquiryTitle}</h3>
+<h5><a href="/admin/changeUserInfo?userNo=${inquiry.userNo }">회원번호 : ${inquiry.userNo }</a></h5>
 <h6><fmt:formatDate value="${inquiry.inquiryDate}" pattern="yyyy/MM/yy HH:mm:SS"/> </h6>
 <hr>
 

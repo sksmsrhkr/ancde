@@ -12,6 +12,7 @@ import com.myboard.myapp.admin.dao.face.AdminDao;
 import com.myboard.myapp.admin.service.face.AdminService;
 import com.myboard.myapp.dto.Admin;
 import com.myboard.myapp.dto.Inquiry;
+import com.myboard.myapp.dto.User;
 import com.myboard.myapp.util.Paging;
 
 @Service
@@ -96,5 +97,25 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public List<Map<Object, String>> getRegulateBoardList(Paging paging, String filter, String keyword) {
 		return adminDao.getReBoardList(paging, filter, keyword);
+	}
+
+	@Override
+	public Paging getUserCnt(int curPage, String filter, String searchType, String keyword) {
+
+		int totalCount = adminDao.getUserTotalCnt(filter, searchType, keyword);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
+	
+	@Override
+	public List<User> getUserList(Paging paging, String filter, String searchType, String keyword) {
+		return adminDao.getUserList(paging, filter, searchType, keyword);
+	}
+	
+	@Override
+	public void updateUser(User user) {
+		adminDao.updateUserInfo(user);
 	}
 }

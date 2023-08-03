@@ -190,4 +190,73 @@
 		) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
   	</select>
   	
+  	<select id="getUserTotalCnt" parameterType="Map" resultType="int">
+  		SELECT count(*) FROM user_tb
+	  		<if test='searchType.equals("no")'>
+			WHERE user_no LIKE '%'|| #{keyword} || '%'
+			</if>
+	  		<if test='searchType.equals("nick")'>
+			WHERE user_nick LIKE '%'|| #{keyword} || '%'
+			</if>
+	  		<if test='searchType.equals("id")'>
+			WHERE user_id LIKE '%'|| #{keyword} || '%'
+			</if>
+		
+				<choose>
+				<when test='filter.equalsIgnoreCase("no")'>
+					ORDER BY user_no
+				</when>
+				<when test='filter.equalsIgnoreCase("noDesc")'>
+					ORDER BY user_no DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("join")'>
+					ORDER BY user_joindate
+				</when>
+				<when test='filter.equalsIgnoreCase("joinDesc")'>
+					ORDER BY user_joindate DESC
+				</when>
+				</choose>
+  	</select>
+  	
+  	<select id="getUserList" parameterType="Map" resultType="USER">
+ 		  	SELECT * FROM
+ 		  		(SELECT rownum rnum , u.* FROM
+ 		  			(SELECT * FROM user_tb
+		  		<if test='searchType.equals("no")'>
+				WHERE user_no LIKE '%'|| #{keyword} || '%'
+				</if>
+		  		<if test='searchType.equals("nick")'>
+				WHERE user_nick LIKE '%'|| #{keyword} || '%'
+				</if>
+		  		<if test='searchType.equals("id")'>
+				WHERE user_id LIKE '%'|| #{keyword} || '%'
+				</if>
+				<choose>
+				<when test='filter.equalsIgnoreCase("no")'>
+					ORDER BY user_no
+				</when>
+				<when test='filter.equalsIgnoreCase("noDesc")'>
+					ORDER BY user_no DESC
+				</when>
+				<when test='filter.equalsIgnoreCase("join")'>
+					ORDER BY user_joindate
+				</when>
+				<when test='filter.equalsIgnoreCase("joinDesc")'>
+					ORDER BY user_joindate DESC
+				</when>
+				</choose>
+				) u
+			) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<update id="updateUserInfo" parameterType="User">
+  		UPDATE user_tb SET
+  		user_name = #{userName},
+  		user_id = #{userId},
+  		user_email = #{userEmail},
+  		user_phone = #{userPhone},
+  		user_gender = #{userGender}
+  		WHERE user_no = #{userNo}
+  	</update>
+  	
   </mapper>

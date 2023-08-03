@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:import url="/WEB-INF/views/layout/header.jsp" />
+<c:import url="/WEB-INF/views/layout/adminHeader.jsp" />
 
 <style>
 
@@ -17,18 +17,7 @@ label {
 	text-align:left;
 	width:30%;
 	font-weight:bold;
-/*  	margin-bottom: 20px;  */
 }
-
-  #submitBtn{
-  	border: none;
-  	border-radius: 5px;
-  	background-color: #B4B4DC;
-  	color: white;
-  	width: 95px;
-    height: 30px;
-    margin-top: 20px;
-  }
 
 #userform{
 	width: 30%;
@@ -37,6 +26,8 @@ label {
 
 input{
 	width: 50%;
+	margin-bottom: 15px;
+	border: none;
 }
 
 p {
@@ -103,13 +94,7 @@ form{
   	position: relative;
   }
   
-  #changeBtn{
-   width: 30%;
-   margin-left: 35%;
-	text-align: center;
-  }
-  
-    #submitBtn{
+  #submitBtn{
   	border: none;
   	border-radius: 5px;
   	background-color: #B4B4DC;
@@ -120,25 +105,52 @@ form{
   }
 </style>
 
-	<script type="text/javascript">
-	
-		function checkForm() {			
-			
-			if( $("#nick").val() == ""){
-				changeForm.userNick.focus();
-				$("#msg_nick").html("닉네임을 입력해주세요"); 
-				return;
-			} else{
-				$("#msg_nick").html(""); 
-			}
-			
-			
-			form.submit();
-			
-		}
-	</script>
+<script type="text/javascript">
 
-<form action="./profile" method="post" enctype="multipart/form-data" id="changeForm">
+function nameChange(){
+	console.log("클릭")
+	  document.getElementById("name").readOnly=false; 
+	document.getElementById("name").focus(); 
+}
+function emailChange(){
+	console.log("클릭")
+	  document.getElementById("email").readOnly=false; 
+	document.getElementById("email").focus(); 
+}
+function phoneChange(){
+	console.log("클릭")
+	  document.getElementById("phone").readOnly=false; 
+	document.getElementById("phone").focus(); 
+}
+function idChange(){
+	console.log("클릭")
+	  document.getElementById("id").readOnly=false; 
+	document.getElementById("id").focus(); 
+}
+function birthChange(){
+	console.log("클릭")
+	  document.getElementById("birth").readOnly=false; 
+	document.getElementById("birth").focus(); 
+}
+function genderChange(){
+	console.log("클릭")
+	var gender =  document.getElementById("gender").value;
+	console.log(gender);
+	if(gender === 'F'){
+		console.log("여자")
+		document.getElementById("gender").value = 'M';
+	} else if(gender === 'M' ){
+		console.log("남자")
+		document.getElementById("gender").value = 'F';
+		
+	}
+	document.getElementById("gender").readOnly=false; 
+	document.getElementById("gender").focus(); 
+}
+
+</script>
+
+<form action="./changeUserInfo" method="post" enctype="multipart/form-data" id="changeForm">
 	<div>
 	<div id="profileBox">
 			<c:choose>
@@ -150,29 +162,43 @@ form{
 				<c:otherwise>
 					<div id="realImgBox">
 					<img id="profileImg" src="/upload/${userfile.userfileStored }"  alt="">
-					<div id="delImg"><span onclick="deleteImg()" data-commNo="${userfile.userfileNo}" ><i class="bi bi-x-circle-fill" ></i></span></div>
+					<span id="delImg"><span onclick="deleteImg()" data-commNo="${userfile.userfileNo}" ><i class="bi bi-x-circle-fill" ></i></span></span>
 					</div>
 				</c:otherwise>
 			</c:choose>
 	</div>	
 	</div>
-		<div id="changeBtn" ><label for="file" style="font-size: 15px; text-align: center;" ><span>사진 변경</span></label></div><br>
-		<input type="file" name="file" id="file" accept="image/*" style="display: none;" onchange="setThumbnail(event);">
-	
-	
 	
 	<br><br><br>
 	
 	
 <div id="userform">
 	<input type="hidden" name="userNo" value="${user.userNo }">
+	필수정보<br><br>
+	<label for="name">이름</label>
+	<input type="text"id="name" name="userName" value="${user.userName }" readonly>
+	<button type="button" onclick="nameChange()">수정</button>
+	
+	<label for="email">이메일</label>
+	<input type="text" id="email" name="userEmail" value="${user.userEmail }" readonly>
+	<button type="button" onclick="emailChange()">수정</button>
+	
+	<label for="phone">휴대폰 번호</label>
+	<input type="text" id="phone" name="userPhone" value="${user.userPhone }" readonly>
+	<button type="button" onclick="phoneChange()">수정</button>
+	
+	<label for="id">아이디</label>
+	<input type="text" id="id" name="userId" value="${user.userId }" readonly>
+	<button type="button" onclick="idChange()">수정</button>
+	
+	<label style="margin-left: 0px;"><b>성별</b></label> 
+	<input type="text" id="gender" name="userGender" value="${user.userGender }" readonly>
+	<button type="button" onclick="genderChange()">수정</button>
+	
 	<br>
-	<label for="nick">닉네임</label>
-	<input type="text" id="nick" name="userNick" value="${user.userNick }">
-	<p id="msg_nick"></p>
-
-</div>
 	<button style="border: 3px solid #B4B4DC;" id="submitBtn" onclick="checkForm(); return false;">정보 수정</button>
+</div>
+
 </form>
 
     <script>
@@ -202,7 +228,7 @@ form{
 					url : '/user/deleteImg',
 					dataType : 'html',
 					data : {'userfileNo' : ${userfile.userfileNo}, 
-							'userNo' : ${userNo}},
+							'userNo' : ${user.userNo}},
 					
 							success : function(data) {
 								console.log("성공");

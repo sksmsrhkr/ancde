@@ -40,9 +40,31 @@ button{
 input{
 	height: 18px;
 }
+
+p {
+	width: 50%;
+	margin-left: 40%;
+	font-size: 14px;
+	color: red;
+}
 </style>
 
 <script type="text/javascript">
+
+window.onload = function() {
+	
+	document.getElementById("pw").focus();
+	
+	var input = document.getElementById("pw");
+
+	input.addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("checkBtn").click();
+		}
+	});
+}
+
 function checkForm() {
 	
 	console.log("유효성 검사")
@@ -88,8 +110,11 @@ function checkForm() {
 	}
 
 	form.submit();
+	alert("비밀번호가 변경되었습니다");
 	
 }
+
+
 </script>
 
 <body>
@@ -111,7 +136,7 @@ function checkForm() {
 	<input type="password" id="newPwChk">
 	<p id="msg_chkpw"></p>
 	
-	<button onclick="checkForm(); return false;">변경</button>
+	<button id="checkBtn" onclick="checkForm(); return false;">변경</button>
 </form>
 </div>
 

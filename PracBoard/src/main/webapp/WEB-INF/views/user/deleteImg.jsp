@@ -22,8 +22,6 @@
 					</div>
 				</c:otherwise>
 			</c:choose>
-		<div id="changeBtn"><label for="file" style="font-size: 15px;" >사진 변경</label></div>
-		<input type="file" name="file" id="file" accept="image/*" style="display: none;" onchange="setThumbnail(event);">
 		
 	<script>
       function setThumbnail(event) {
