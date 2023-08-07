@@ -703,6 +703,32 @@ $(function(){
 	 		
 
  		})
+ 		
+ 		function boardReDel(){
+		console.log("click")
+		console.log(${board.boardNo})
+		
+		var chk = confirm("규제를 해제하시겠습니까?");
+		if(chk) {
+				$.ajax({
+	 			type : 'post',
+	 			url : '/admin/reportBoardDelete',
+	 			dataType : 'json',
+	 			data: {
+	 				boardNo : ${board.boardNo} 
+	 				},
+	 			
+	 				success: function(result) {
+						console.log("성공")
+						console.log(result)
+						location.href =	"/board/view?boardNo=" +  ${board.boardNo};
+	 				},error: function (request, status, error) {
+				        console.log("erdsror");
+				    }
+	 			})
+			}
+		
+		}
  	</script> 
 	
 <div class="container">
@@ -774,7 +800,12 @@ $(function(){
 	</c:when>
 	<c:otherwise>
 	<div id="boardContent" style="margin: 50px 10px; min-height: 100px; text-align: center; padding-top: 25px;">
-	<h5>이 글은 관리자에 의해 규제된 글입니다.</h5></div>
+	<h5>이 글은 관리자에 의해 규제된 글입니다.</h5>
+	<c:if test="${adminLogin eq true}">
+	<div style="float: right; color: gray; padding-top:50px;">
+	<span onclick="boardReDel()">해제</span></div>	
+	</c:if>
+	</div>
 	</c:otherwise>
 	</c:choose>
 	<!-- 추천, 댓글 총 갯수 -->

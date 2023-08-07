@@ -377,13 +377,15 @@ public class BoardServiceImpl implements BoardService{
 		
 		logger.info("확인해봐요 {}", reportCnt);
 		
-		if( reportCnt > 1 && reportCnt <5 ) {
-			reportBoard.setReportCnt(reportCnt);
-			boardDao.updateBoardReportCnt(reportBoard);
-		} else if(reportCnt >= 5) {
-			reportBoard.setReportCnt(reportCnt);
-			boardDao.updateBoardReportCnt(reportBoard);
+		reportBoard.setReportCnt(reportCnt);
+		boardDao.updateBoardReportCnt(reportBoard);
+	
+		if(reportCnt >= 5) {
 			boardDao.updateRelBoard(reportBoard);
+			
+			int userNo = boardDao.getRegulatedUser(reportBoard.getBoardNo());
+			boardDao.insertBoardBlackList(userNo);
+			
 		}
 		
 		

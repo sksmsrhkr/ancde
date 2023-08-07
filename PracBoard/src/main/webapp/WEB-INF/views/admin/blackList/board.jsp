@@ -68,7 +68,7 @@ function filterSelect(){
 	var filter = $("#filter").val();
 	var keyword = $("#keyword").val();
 	
-	location.href = "/admin/regulateBoard?curPage=1" + "&filter=" + filter + "&keyword=" + keyword ; 
+	location.href = "/admin/blackList/board?curPage=1" + "&filter=" + filter + "&keyword=" + keyword ; 
 }
 </script>
 
@@ -84,7 +84,7 @@ window.onload = function() {
 	
 	console.log(keyword)
 	
-	location.href = "/admin/regulateBoard?curPage=1" + "&filter=" + filter + "&keyword=" + keyword;
+	location.href = "/admin/blackList/board?curPage=1" + "&filter=" + filter + "&keyword=" + keyword;
 	
 	}
 	var input = document.getElementById("keyword");
@@ -104,15 +104,15 @@ window.onload = function() {
 <div id="adminSlider">
 
 <h2>회원 관리</h2>
-<p><a href="./userList">회원 정보 수정</a></p>
-<p><a href="./blackList/board">블랙 리스트 관리</a></p>
+<p><a href="/admin/userList">회원 정보 수정</a></p>
+<p ><a href="/admin/blackList/board" style="color: #497649; font-size: 30px;">블랙 리스트 관리</a></p>
 <br>
 <h2>신고 관리</h2>
-<p ><a href="./regulateBoard" style="color: #497649; font-size: 30px;">글 신고 내역</a></p>
-<p><a href="./regulateComm">댓글 신고 내역</a></p>
+<p ><a href="/admin/regulateBoard">글 신고 내역</a></p>
+<p><a href="/admin/regulateComm">댓글 신고 내역</a></p>
 <br>
 <h2>고객 센터</h2>
-<p><a href="./serviceCenter">문의 내역</a></p>
+<p><a href="/admin/serviceCenter">문의 내역</a></p>
 <br>
 <h2>공지 사항</h2>
 <p>작성 내역</p>
@@ -123,29 +123,13 @@ window.onload = function() {
 <div id="filterBox" style="float: left;">
 <select class="array" id="filter" name="filter" onchange="filterSelect()">
 	<c:choose>
-		<c:when test="${filter eq 'relCnt' }">
-			<option value="date">시간순</option>
-			<option value="relCnt" selected>신고누적순</option>
-			<option value="bRel">미규제</option>
-			<option value="aRel">규제</option>
-		</c:when>
-		<c:when test="${filter eq 'bRel' }">
-			<option value="date">시간순</option>
-			<option value="relCnt">신고누적순</option>
-			<option value="bRel" selected>미규제</option>
-			<option value="aRel">규제</option>
-		</c:when>
-		<c:when test="${filter eq 'aRel' }">
-			<option value="date">시간순</option>
-			<option value="relCnt">신고누적순</option>
-			<option value="bRel">미규제</option>
-			<option value="aRel" selected>규제</option>
+		<c:when test="${filter eq 'userDesc' }">
+			<option value="userNo">낮은번호순</option>
+			<option value="userDesc" selected>높은번호순</option>
 		</c:when>
 		<c:otherwise>
-			<option value="date">시간순</option>
-			<option value="relCnt">신고누적순</option>
-			<option value="bRel">미규제</option>
-			<option value="aRel">규제</option>
+			<option value="userNo">낮은번호순</option>
+			<option value="userDesc">높은번호순</option>
 		</c:otherwise>
 	</c:choose>
 </select>
@@ -159,47 +143,32 @@ window.onload = function() {
 <table>
 	<thead>
 	<tr>
-		<c:if test="${filter eq 'relCnt' }">
-			<th>누적 신고</th>
-		</c:if>
-		<th>신고 번호</th>
-		<th>글번호</th>
 		<th>규제 회원</th>
+		<th>글번호</th>
 		<th>글 제목</th>	
-		<th>신고 유형</th>	
-		<th>신고 날짜</th>	
-		<th>신고 회원</th>
-		<th>규제 현황</th>
+		<th>블랙리스트</th>	
 	</tr>
 	</thead>
-	<c:forEach items="${reBoardList}" var="regulate">
+	<c:forEach items="${blackboardlist}" var="boardBlack">
 	
 	<tr>
-		<c:if test="${filter eq 'relCnt' }">
-			<td><b>${regulate.REPORT_CNT }회</b></td>
-		</c:if>
-		<td>${regulate.REPORT_BNO }</td>
-		<td>${regulate.BOARD_NO }</td>
-		<td>${regulate.RNO }</td>
+		<td>${boardBlack.USER_NO }</td>
+		<td>${boardBlack.BOARD_NO }</td>
 		<td>
 		<c:choose>
-			<c:when test="${fn:length(regulate.TITLE) gt 26}">
-			<a href="/board/view?boardNo=${regulate.BOARD_NO}#${regulate.TITLE}" style="color: #787878;">
-			<c:out value="${fn:substring(regulate.TITLE, 0, 25)}"/>...</a>
+			<c:when test="${fn:length(boardBlack.TITLE) gt 26}">
+			<a href="/board/view?boardNo=${boardBlack.BOARD_NO}#${boardBlack.TITLE}" style="color: #787878;">
+			<c:out value="${fn:substring(boardBlack.TITLE, 0, 25)}"/>...</a>
 			</c:when>
 			<c:otherwise>
-			<a href="/board/view?boardNo=${regulate.BOARD_NO}" style="color: #787878;">
-			${regulate.TITLE }</a>
+			<a href="/board/view?boardNo=${boardBlack.BOARD_NO}" style="color: #787878;">
+			${boardBlack.TITLE }</a>
 			</c:otherwise>
 		</c:choose>
 		</td>
-		<td>${regulate.CASE }</td>
-		<td><fmt:formatDate value="${regulate.REPORT_DATE}"
- 							pattern="yy/MM/dd HH:mm" /></td>
-		<td>${regulate.USER_NO }</td>
 		<td>
-		<c:if test="${regulate.BOARD_BLIND eq 'y'}">규제</c:if>
-		<c:if test="${regulate.BOARD_BLIND eq 'n'}">미규제</c:if>
+		<c:if test="${ boardBlack.BLACKCNT lt 3}"> 경고 ${ boardBlack.BLACKCNT} 회</c:if>
+		<c:if test="${ boardBlack.BLACKCNT ge 3}"> 글 작성 제한</c:if>
 		</td>
 	</tr>
 	
@@ -214,27 +183,27 @@ window.onload = function() {
 			<!--1번이 아닐때 = ne  -->
 			<c:if test="${paging.curPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?filter=${filter}&keyword=${keyword}">
+					href="./blackList/board?filter=${filter}&keyword=${keyword}">
 						처음</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./regulateBoard?filter=${filter}&keyword=${keyword}">
+					href="./blackList/board?filter=${filter}&keyword=${keyword}">
 						처음</a></li>
 			</c:if>
 
 			<%--이전 페이징 리스트로 이동 --%>
-			<%--    <li class="page-item"><a class="page-link" href="./regulateBoard?curPage=${paging.curPage - paging.pageCount }">&laquo;</a></li> --%>
-			<%--    <li class="page-item"><a class="page-link" href="./regulateBoard?curPage=${paging.endPage- paging.pageCount }">&laquo;</a></li> --%>
+			<%--    <li class="page-item"><a class="page-link" href="./blackList/board?curPage=${paging.curPage - paging.pageCount }">&laquo;</a></li> --%>
+			<%--    <li class="page-item"><a class="page-link" href="./blackList/board?curPage=${paging.endPage- paging.pageCount }">&laquo;</a></li> --%>
 
 			<c:if test="${paging.startPage ne 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&keyword=${keyword}">&laquo;</a></li>
+					href="./blackList/board?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&keyword=${keyword}">&laquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.startPage eq 1 }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&keyword=${keyword}">&laquo;</a></li>
+					href="./blackList/board?curPage=${paging.startPage - paging.pageCount }&filter=${filter}&keyword=${keyword}">&laquo;</a></li>
 			</c:if>
 
 
@@ -242,7 +211,7 @@ window.onload = function() {
 			<%--이전 페이지로 이동 --%>
 			<c:if test="${paging.curPage gt 1 }">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.curPage -1 }&filter=${filter}&keyword=${keyword}">&lt;</a></li>
+					href="./blackList/board?curPage=${paging.curPage -1 }&filter=${filter}&keyword=${keyword}">&lt;</a></li>
 			</c:if>
 
 			<%--페이징 번호 리스트 --%>
@@ -250,12 +219,12 @@ window.onload = function() {
 				end="${paging.endPage }">
 				<c:if test="${paging.curPage eq i }">
 					<li class="page-item active"><a class="page-link"
-						href="./regulateBoard?curPage=${i }&filter=${filter}&keyword=${keyword}">${i }</a></li>
+						href="./blackList/board?curPage=${i }&filter=${filter}&keyword=${keyword}">${i }</a></li>
 				</c:if>
 
 				<c:if test="${paging.curPage ne i }">
 					<li class="page-item "><a class="page-link"
-						href="./regulateBoard?curPage=${i }&filter=${filter}&keyword=${keyword}">${i }</a></li>
+						href="./blackList/board?curPage=${i }&filter=${filter}&keyword=${keyword}">${i }</a></li>
 				</c:if>
 
 			</c:forEach>
@@ -263,29 +232,29 @@ window.onload = function() {
 			<%--다음 페이지로 이동 --%>
 			<c:if test="${paging.curPage lt paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.curPage +1 }&filter=${filter}&keyword=${keyword}">&gt;</a></li>
+					href="./blackList/board?curPage=${paging.curPage +1 }&filter=${filter}&keyword=${keyword}">&gt;</a></li>
 			</c:if>
 
 			<%--다음 페이징 리스트로 이동 --%>
 			<c:if test="${paging.endPage ne paging.totalPage}&filter=${filter}&keyword=${keyword}">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&keyword=${keyword}">&raquo;</a></li>
+					href="./blackList/board?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&keyword=${keyword}">&raquo;</a></li>
 			</c:if>
 
 			<c:if test="${paging.endPage eq paging.totalPage }">
 				<li class="page-item disabled"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&keyword=${keyword}">&raquo;</a></li>
+					href="./blackList/board?curPage=${paging.startPage + paging.pageCount }&filter=${filter}&keyword=${keyword}">&raquo;</a></li>
 			</c:if>
 
 			<%--마지막 페이지로 이동 --%>
 			<c:if test="${paging.curPage ne paging.totalPage }">
 				<li class="page-item"><a class="page-link"
-					href="./regulateBoard?curPage=${paging.totalPage }&filter=${filter}&keyword=${keyword}">마지막
+					href="./blackList/board?curPage=${paging.totalPage }&filter=${filter}&keyword=${keyword}">마지막
 				</a></li>
 			</c:if>
 			<c:if test="${paging.curPage eq paging.totalPage }">
 				<li class="page-item "><a class="page-link"
-					href="./regulateBoard?curPage=${paging.totalPage }&filter=${filter}&keyword=${keyword}">
+					href="./blackList/board?curPage=${paging.totalPage }&filter=${filter}&keyword=${keyword}">
 						마지막 </a></li>
 			</c:if>
 		</ul>

@@ -36,6 +36,12 @@ public interface AdminService {
 
 	public void updateUser(User user);
 
+	public Paging getCntblBoard(int curPage, String filter, String keyword);
+
+	public List<Map<Object, String>> getBoardBlackList(Paging paging, String filter, String keyword);
+
+	public int deleteBoardRel(int boardNo);
+
 
 	
 

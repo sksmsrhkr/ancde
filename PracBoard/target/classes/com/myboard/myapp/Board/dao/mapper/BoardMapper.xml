@@ -122,6 +122,7 @@
         , (SELECT count(*) FROM  board_recommend br WHERE br.board_no = b.board_no
         ) recommendCnt
         , (SELECT count(*) FROM board_comment bc WHERE bc.board_no = b.board_no) commentCnt
+        , ( SELECT count(*) FROM report_board br WHERE br.board_no = b.board_no) isblind
         , u.user_nick
         FROM board b
         INNER JOIN user_tb u ON b.user_no = u.user_no
@@ -228,5 +229,15 @@
 	<select id="isBlindBoard" parameterType="int" resultType="int">
 		SELECT count(*) FROM report_board WHERE board_no = #{boardNo} AND board_blind = 'y'
 	</select>
+	
+	<select id="getRegulatedUser" parameterType="int" resultType="int">
+		SELECT user_no FROM board WHERE board_no = #{boardNo}
+	</select>
+	
+	<insert id="insertBoardBlackList" parameterType="int">
+		INSERT INTO black_list (black_no, black_type, user_no)
+		VALUES(black_no_seq.nextval, 'B', #{userNo})
+	</insert>
+	
   	
   </mapper>

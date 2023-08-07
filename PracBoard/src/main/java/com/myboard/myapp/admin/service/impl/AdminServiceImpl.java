@@ -118,4 +118,23 @@ public class AdminServiceImpl implements AdminService{
 	public void updateUser(User user) {
 		adminDao.updateUserInfo(user);
 	}
+	
+	@Override
+	public Paging getCntblBoard(int curPage, String filter, String keyword) {
+		int totalCount = adminDao.getBlackBoardCnt(filter, keyword);
+		
+		Paging paging = new Paging(totalCount, curPage);
+		
+		return paging;
+	}
+	
+	@Override
+	public List<Map<Object, String>> getBoardBlackList(Paging paging, String filter, String keyword) {
+		return adminDao.getBoardBlackList(paging, filter, keyword);
+	}
+	
+	@Override
+	public int deleteBoardRel(int boardNo) {
+		return adminDao.deleteBoardRel(boardNo);
+	}
 }

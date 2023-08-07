@@ -87,7 +87,14 @@
 		<tr>
 			<td>${list.BOARD_NO}</td>
 			<td id="title">
+			<c:choose>
+			<c:when test="${list.ISBLIND ge 5 }">
+			<a href="./view?boardNo=${list.BOARD_NO}">이 글은 관리자에 의해 규제된 글입니다.</a>
+			</c:when>
+			<c:otherwise>
 			<a href="./view?boardNo=${list.BOARD_NO}">${list.TITLE}</a>
+			</c:otherwise>
+			</c:choose>
 			
 			<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
 					<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->

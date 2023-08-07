@@ -74,7 +74,7 @@ function filterSelect(){
 <div id="adminSlider">
 <h2>회원 관리</h2>
 <p><a href="./userList">회원 정보 수정</a></p>
-<p>블랙 리스트 관리</p>
+<p><a href="./blackList/board">블랙 리스트 관리</a></p>
 <br>
 <h2>신고 관리</h2>
 <p><a href="./regulateBoard">글 신고 내역</a></p>

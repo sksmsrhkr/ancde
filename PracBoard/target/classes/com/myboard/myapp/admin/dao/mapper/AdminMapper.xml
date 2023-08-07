@@ -177,10 +177,10 @@
 				</when>
 				<when test='filter.equalsIgnoreCase("aRel")'>
 					AND board_blind = 'y'
-					ORDER BY report_bno DESC
+					ORDER BY r.report_cnt DESC, r.board_no
 				</when>
 				<when test='filter.equalsIgnoreCase("relCnt")'>
-					ORDER BY r.report_cnt DESC
+					ORDER BY r.report_cnt DESC, r.board_no
 				</when>
 				<otherwise>
 					ORDER BY report_bno DESC
@@ -258,5 +258,42 @@
   		user_gender = #{userGender}
   		WHERE user_no = #{userNo}
   	</update>
+  	
+  	<select id="getBlackBoardCnt" parameterType="Map" resultType="int">
+  	    SELECT count(*) FROM       
+        (SELECT DISTINCT rb.board_no, rb.report_cnt, b.user_no, b.title from report_board rb , board b 
+        WHERE rb.board_no = b.board_no AND rb.board_blind = 'y'
+        	<if test="!keyword.equals('') or keyword != null">
+	  			AND rb.board_no || b.user_no || b.title LIKE '%' || #{keyword} || '%'
+	  		</if>
+        )
+  	</select>
+  	
+  	<select id="getBoardBlackList" resultType="Map" parameterType="Map">
+  	   SELECT * FROM
+       (SELECT rownum rnum , B.* FROM 
+        (SELECT DISTINCT rb.board_no, rb.report_cnt, b.user_no, b.title, bl.black_type  
+        ,(SELECT count(*) FROM black_list WHERE user_no = b.user_no) blackCnt
+        FROM report_board rb , board b , black_list bl
+        WHERE rb.board_no = b.board_no AND rb.board_blind = 'y'
+        AND b.user_no = bl.user_no(+)
+        	<if test="!keyword.equals('') or keyword != null">
+	  			AND rb.board_no || b.user_no || b.title LIKE '%' || #{keyword} || '%'
+	  		</if>
+       		<choose>
+			<when test='filter.equalsIgnoreCase("userNo")'>
+				ORDER BY b.user_no
+			</when>
+			<when test='filter.equalsIgnoreCase("userDesc")'>
+				ORDER BY b.user_no DESC
+			</when>
+			</choose>
+        )B 
+        ) WHERE rnum BETWEEN #{paging.startNo} AND #{paging.endNo}
+  	</select>
+  	
+  	<delete id="deleteBoardRel" parameterType="int">
+  		DELETE report_board WHERE board_no = #{boardNo}
+  	</delete>
   	
   </mapper>

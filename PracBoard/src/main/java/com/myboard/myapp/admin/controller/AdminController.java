@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.myboard.myapp.Board.service.face.BoardService;
@@ -217,7 +218,40 @@ public class AdminController {
 		model.addAttribute("searchType", searchType);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("paging", paging);
+	}
+	
+	@RequestMapping("/blackList/board")
+	public void blackList(@RequestParam(defaultValue = "0") int curPage, Model model
+			, @RequestParam(defaultValue = "date") String filter
+			, @RequestParam(value = "keyword",required = false, defaultValue = "") String keyword) {
+	
+	logger.info("filter : {}", filter);
+	logger.info("keyword : {}", keyword);
+	
+	Paging paging = adminService.getCntblBoard(curPage, filter, keyword);
+	
+	List<Map<Object, String>> blackboardlist = adminService.getBoardBlackList(paging, filter, keyword);
+	
+	logger.info("{}", paging);
+	logger.info("{}", blackboardlist);
+	
+	model.addAttribute("paging", paging);
+	model.addAttribute("filter", filter);
+	model.addAttribute("keyword", keyword);
+	model.addAttribute("blackboardlist", blackboardlist);
+	
+	}
+	
+	@PostMapping("/reportBoardDelete")
+	@ResponseBody
+	public int reportBoardDel(int boardNo) {
+		logger.info("{}", boardNo);
 		
+		int result = adminService.deleteBoardRel(boardNo);
+		logger.info("{}", result);
+		
+		return result;
 		
 	}
+	
 }

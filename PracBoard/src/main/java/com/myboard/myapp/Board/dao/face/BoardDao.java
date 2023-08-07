@@ -89,6 +89,10 @@ public interface BoardDao {
 
 	public int isBlindBoard(int boardNo);
 
+	public int getRegulatedUser(int boardNo);
+
+	public void insertBoardBlackList(int userNo);
+
 
 	
 

@@ -38,5 +38,11 @@ public interface AdminDao {
 
 	public void updateUserInfo(User user);
 
+	public int getBlackBoardCnt(@Param("filter") String filter, @Param("keyword") String keyword);
+
+	public List<Map<Object, String>> getBoardBlackList(@Param("paging") Paging paging, @Param("filter") String filter, @Param("keyword") String keyword);
+
+	public int deleteBoardRel(int boardNo);
+
 
 }
